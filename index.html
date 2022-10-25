@@ -1,0 +1,365 @@
+<html>
+<head>
+<title>GameShow</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+</head>
+<body><CENTER>
+<canvas id="cvs" />
+<script type="text/javascript">
+window.onload = function() {
+
+  var WIDTH, HEIGHT;
+  var FIELD_WIDTH, FIELD_HEIGHT;
+  const LEFT_OFFSET = 10;
+  const TOP_OFFSET = 10;
+  const NUM_OF_PEOPLE = 1000;
+  const DEFAULT_FONT = "bold 8pt 'Times New Roman'";
+
+  var score = 0;
+  var score_on_screen = 0;
+  var time_hour = 6;
+  var time_minute = 0;
+  var time_sec = 0;
+  var time_day = 0;
+  const time_minute_max = 60;
+  const time_sec_max = 50;
+  var game_over = false;
+  var game_over_touchlock = 0;
+
+  var counter = 0;
+  const NUM_OF_BOOTH = 25;
+
+  var canvas = document.getElementById('cvs');
+  if (!canvas.getContext) {
+    return false;
+  }
+
+  var ctx = canvas.getContext('2d');
+
+  fitCanvasSize();
+  window.onresize = fitCanvasSize;
+
+  var GameCateogry = {
+    shooting : 0,
+    action : 1,
+    rpg : 2,
+    adventure : 3,
+    race: 4,
+    puzzle: 5,
+    simulation: 6
+  };
+
+  var GameCateogryColor = new Array(
+    'blue',
+    'red',
+    'yellow',
+    'purple',
+    'black',
+    'green',
+    'cyan'
+    );
+
+  var booth_x = new Array(NUM_OF_BOOTH);
+  var booth_y =  new Array(NUM_OF_BOOTH);
+  var booth_size =  new Array(NUM_OF_BOOTH);
+  var booth_gamecategory = new Array(NUM_OF_BOOTH);
+  const BOOTH_SIZE_MAX = 100;
+
+  var person_in_field = new Array(NUM_OF_PEOPLE);
+  var person_x =  new Array(NUM_OF_PEOPLE);
+  var person_y =  new Array(NUM_OF_PEOPLE);
+  var person_gamecategory = new Array(NUM_OF_BOOTH);
+
+  var mouseX, mouseY;
+  var touchX = 0;
+  var touchY = 0;
+  var touchViewCounter = 0;
+  var touchHoldElevator = -1;
+  var timer;
+  var mouse_click = false;
+
+  var interval = 10;
+
+  var touchstart_mouseX = -1;
+  var touchstart_mouseY = -1;
+  var touchstartTime = 0;
+  var touchTime = 1000;
+
+  var touchVisualizerX = -1;
+  var touchVisualizerY = -1;
+  var touchVisualizerCounter = 0;
+
+  init_game();
+
+//  var booth;
+  function fitCanvasSize() {
+    var w = document.documentElement.clientWidth;
+    var h = document.documentElement.clientHeight - 40;
+    canvas.width = w;
+    canvas.height = h;
+
+    WIDTH = w;
+    HEIGHT = h;
+    FIELD_WIDTH = WIDTH;
+    FIELD_HEIGHT = HEIGHT - TOP_OFFSET * 2;
+  }
+
+  // ----------------------------------------------------------------
+  // mouse or touch
+
+  // mouse
+  canvas.onmousedown=function(e){
+    adjustLocation(e);
+    return false;
+  }
+
+  canvas.onmousemove=function(e){
+    adjustLocation(e);
+    return false;
+  }
+
+  canvas.onmouseup=function(e){
+    adjustLocation(e);
+    return false;
+  }
+
+  // touch
+  canvas.ontouchstart=function(){
+    return false;
+  }
+
+  canvas.ontouchmove=function(e){
+    return false;
+  }
+
+  canvas.ontouchend=function(e){
+    return false;
+  }
+
+  function init_game(){
+    score = 0;
+    score_on_screen = 0;
+    time_hour = 6;
+    time_minute = 0;
+    time_sec = 0;
+    time_day = 0;
+
+    game_over = false;
+    game_over_touchlock = 0;
+    counter = 0;
+    for(var i = 0; i < NUM_OF_BOOTH; i++)
+    {
+      booth_x[i] = Math.floor(Math.random() * FIELD_WIDTH);
+      booth_y[i] =  Math.floor(Math.random() * FIELD_HEIGHT);
+      booth_size[i] =  Math.floor(Math.random() * BOOTH_SIZE_MAX);
+      booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+    }
+
+    for(var i = 0; i < NUM_OF_PEOPLE; i++)
+    {
+      person_in_field[i] = false;
+      person_x[i] =  0;
+      person_y[i] =  0;
+      person_gamecategory[i] = 0;
+    }
+
+  }
+
+  function adjustLocation(e){
+    // adjust
+    var rect = e.target.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+
+    touchVisualizerX = mouseX;
+    touchVisualizerY = mouseY;
+    touchVisualizerCounter = 30;
+
+    if(game_over == true && game_over_touchlock == 0){
+      init_game();
+      game_over = false;
+      bgm_stop();
+    }
+  } // -------------------------
+
+  // Count Max for next person in. (Small = Busy)
+  function countMaxForNextPersonIn(){
+    var count = Math.floor(Math.random() * 500);
+    return count;
+  }
+
+  function person_fieldin_1stfloor_percentage(){
+    var percentage = 80;
+    return percentage;
+  }
+
+  // DRAW
+  function draw(){
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.textAlign = "center";
+    ctx.font = DEFAULT_FONT;
+    ctx.lineWidth = 1;
+
+    // Draw booth
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      ctx.beginPath();
+      ctx.strokeStyle = GameCateogryColor[booth_gamecategory[i]];
+      ctx.rect(booth_x[i]- booth_size[i] / 2, booth_y[i]- booth_size[i] / 2,
+      booth_size[i],                         booth_size[i]);
+      ctx.stroke();
+    }
+
+    // Draw Persons
+    ctx.strokeStyle = 'black';
+    for(var i = 0; i < NUM_OF_PEOPLE; i++){
+     if(person_in_field[i] == true){
+      var size = 1;
+      ctx.strokeStyle = GameCateogryColor[person_gamecategory[i]];
+      ctx.beginPath();
+      ctx.arc(person_x[i], person_y[i], 3 * size, 0, Math.PI*2, true);
+      ctx.stroke();
+     }
+    }
+
+    // Draw Time
+    ctx.fillStyle = 'rgba(0, 0, 0)';
+    var time_size = 1;  // 0-1
+    var time_hold = 5;
+    if(time_minute == 0){
+       time_size = 1 - (time_sec_max - time_sec) / time_sec_max;
+    }else if(time_minute < time_hold){
+       time_size = 1;
+    }else if(time_minute < 12){
+       var ten_minute_max = (12 - time_hold) * time_sec_max;
+       time_size = (ten_minute_max - (time_minute - (time_hold - 1)) * time_sec_max + (time_sec_max - time_sec)) / ten_minute_max;
+    }else{
+       time_size = 0;
+    }
+    ctx.font = 10 + 10 * time_size + "pt 'Times New Roman'";
+    var text_minutes;
+    if(time_minute < 10){
+      text_minutes = "0" + time_minute;
+    }else{
+      text_minutes = time_minute;
+    }
+    if(time_hour < 12){
+      ctx.fillText("AM " + time_hour + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+    }else{
+      ctx.fillText("PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+    }
+    ctx.font = DEFAULT_FONT;
+
+    // Draw Score
+    if(score > score_on_screen) score_on_screen++;
+    ctx.textAlign = "left";
+    ctx.font = "10pt 'Times New Roman'";
+    ctx.fillText("SCORE: " + score_on_screen, LEFT_OFFSET, TOP_OFFSET);
+    ctx.textAlign = "center";
+
+    if(game_over_touchlock > 0) game_over_touchlock--;
+    if(game_over == true){
+        ctx.fillStyle = "#E9967A";
+        ctx.font = 40 + "pt 'Times New Roman'";
+        ctx.fillText("Game Over", WIDTH / 2, HEIGHT / 2);
+
+        if(game_over_touchlock == 0){
+          ctx.font = 30 + "pt 'Times New Roman'";
+          ctx.fillText("Tap to replay", WIDTH / 2, HEIGHT * 2 / 3);
+        }
+        score_on_screen = score;
+       return;
+    }
+
+    // move persons
+   for(var i = 0; i < NUM_OF_PEOPLE; i++){
+     if(person_in_field[i] == true){
+
+       // Find Near Booth interested in
+       var near_booth_interested_in = -1;
+       var near_distance = -1;
+       for(var j = 0; j < NUM_OF_BOOTH; j++){
+         if(booth_gamecategory[j] == person_gamecategory[i]){
+           var distance = Math.pow(person_x[i] - booth_x[j], 2) + Math.pow(person_y[i] - booth_y[j], 2);
+           if(distance < near_distance || near_distance == -1){
+             near_distance = distance;
+             near_booth_interested_in = j;        // nearest booth
+           }
+         }
+       }
+       // move to nearest booth (j)
+       if(near_booth_interested_in == -1){
+         person_x[i]--;
+       }else{
+         var x_diff = booth_x[near_booth_interested_in] - person_x[i];
+         var y_diff = booth_y[near_booth_interested_in] - person_y[i];
+         if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
+         if(y_diff != 0) person_y[i] = person_y[i] + y_diff / Math.abs(y_diff);
+       }
+
+       // Keep distance
+       for(var k = 0; k < NUM_OF_PEOPLE; k++){  // Keep distance
+         if( i != k && person_in_field[k] == true){
+           var distance = Math.pow(person_x[i] - person_x[k], 2) + Math.pow(person_y[i] - person_y[k], 2);
+           if(distance < 100){ // Near! Keep Distance!
+            var x_diff = person_x[k] - person_x[i];
+            var y_diff = person_y[k] - person_y[i];
+            if(x_diff != 0)
+              person_x[i] = person_x[i] - (x_diff / Math.abs(x_diff)) * Math.floor(Math.random() * 6);
+            else
+              person_x[i] = person_x[i] - (Math.floor(Math.random() * 6) - 3);   // 0 case
+            if(y_diff != 0)
+              person_y[i] = person_y[i] - (y_diff / Math.abs(y_diff)) * Math.floor(Math.random() * 6);
+            else
+              person_y[i] = person_y[i] - (Math.floor(Math.random() * 6) - 3);   // 0 case
+           }
+        }
+       }
+     }
+   }
+
+    // Time count
+    time_sec++;
+    if(time_sec > time_sec_max - 1){
+      time_minute++;
+      time_sec = 0;
+    }
+    if(time_minute > time_minute_max - 1){
+      time_hour++;
+      time_minute = 0;
+    }
+    if(time_hour > 23){
+      time_day++;
+      time_hour = 0;
+    }
+
+    ctx.fillStyle = "#000";
+
+    // person field in
+    if( counter == 0 ){
+      for(var i = 0; i < NUM_OF_PEOPLE; i++){
+        if(person_in_field[i] == false){
+          person_in_field[i] = true;
+          person_x[i] =  FIELD_WIDTH;
+          person_y[i] =  FIELD_HEIGHT / 2;
+          person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+          break;
+        }
+      }
+    }
+    counter++;
+    if(counter > countMaxForNextPersonIn()) counter = 0;
+  }
+
+  var move = function() {
+    draw();
+
+    clearTimeout(timer);
+    timer = setTimeout(move, interval);
+  };
+
+  move();
+};
+</script>
+</CENTER></body>
+</html>
