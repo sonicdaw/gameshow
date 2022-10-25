@@ -70,6 +70,8 @@ window.onload = function() {
   var person_x =  new Array(NUM_OF_PEOPLE);
   var person_y =  new Array(NUM_OF_PEOPLE);
   var person_gamecategory = new Array(NUM_OF_BOOTH);
+  var person_booth_visit_list = new Array(NUM_OF_BOOTH);
+  var person_playing = new Array(NUM_OF_BOOTH);
 
   var mouseX, mouseY;
   var touchX = 0;
@@ -92,7 +94,6 @@ window.onload = function() {
 
   init_game();
 
-//  var booth;
   function fitCanvasSize() {
     var w = document.documentElement.clientWidth;
     var h = document.documentElement.clientHeight - 40;
@@ -162,6 +163,8 @@ window.onload = function() {
       person_x[i] =  0;
       person_y[i] =  0;
       person_gamecategory[i] = 0;
+      person_booth_visit_list[i] = [];
+      person_playing[i] = 0;
     }
 
   }
@@ -192,6 +195,17 @@ window.onload = function() {
   function person_fieldin_1stfloor_percentage(){
     var percentage = 80;
     return percentage;
+  }
+
+  function visitedBooth(person_i, booth_j){
+    var result = false;
+    for(let booth of person_booth_visit_list[person_i]){
+      if(booth == booth_j){
+        result = true;
+        break;
+      }
+    }
+    return result;
   }
 
   // DRAW
@@ -279,6 +293,7 @@ window.onload = function() {
        var near_booth_interested_in = -1;
        var near_distance = -1;
        for(var j = 0; j < NUM_OF_BOOTH; j++){
+         if(visitedBooth(i, j)) continue;
          if(booth_gamecategory[j] == person_gamecategory[i]){
            var distance = Math.pow(person_x[i] - booth_x[j], 2) + Math.pow(person_y[i] - booth_y[j], 2);
            if(distance < near_distance || near_distance == -1){
@@ -314,6 +329,18 @@ window.onload = function() {
               person_y[i] = person_y[i] - (Math.floor(Math.random() * 6) - 3);   // 0 case
            }
         }
+       }
+
+       // Visit
+       for(var j = 0; j < NUM_OF_BOOTH; j++){
+         if(Math.abs(booth_x[j] - person_x[i]) < 10 && Math.abs(booth_y[j] - person_y[i]) < 10){
+           person_playing[i]++;
+           if(person_playing[i] > 500){
+             person_booth_visit_list[i].push(j);
+             person_playing[i] = 0;
+           }
+           break;
+         }
        }
      }
    }
