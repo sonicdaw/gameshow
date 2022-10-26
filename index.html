@@ -231,7 +231,7 @@ window.onload = function() {
       var size = 1;
       ctx.strokeStyle = GameCateogryColor[person_gamecategory[i]];
       ctx.beginPath();
-      ctx.arc(person_x[i], person_y[i], 3 * size, 0, Math.PI*2, true);
+      ctx.arc(person_x[i], person_y[i], 3 * size + Math.abs(person_playing[i]/100), 0, Math.PI*2, true);
       ctx.stroke();
      }
     }
