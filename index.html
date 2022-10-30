@@ -359,9 +359,18 @@ window.onload = function() {
       genre_switch_circle_radius_max = move_length;
     }
 
-    // move Exhibitor genre switch guide circle
+    // move Exhibitor genre switch circle
     if(genre_switch_circle_ripples == true){
       genre_switch_circle_radius++;
+      // switch genre in the switch circle
+      var circle_radius_pow = Math.pow(genre_switch_circle_radius, 2);
+      for(var i = 0; i < NUM_OF_PEOPLE; i++){
+        var person_length_pow = Math.pow(exhibitor_x - person_x[i], 2) + Math.pow(exhibitor_y - person_y[i], 2);
+        if(circle_radius_pow > person_length_pow){  // person in circle
+          person_gamecategory[i] = booth_gamecategory[exhibitor_booth]// replace genre
+        }
+      }
+
       if(genre_switch_circle_radius > genre_switch_circle_radius_max){
         genre_switch_circle_radius = 0;
         genre_switch_circle_ripples = false;
