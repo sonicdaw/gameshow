@@ -73,6 +73,13 @@ window.onload = function() {
   var person_booth_visit_list = new Array(NUM_OF_BOOTH);
   var person_playing = new Array(NUM_OF_BOOTH);
 
+  var exhibitor_x = -1;
+  var exhibitor_y = -1;
+  var exhibitor_x_click = -1;
+  var exhibitor_y_click = -1;
+  var exhibitor_booth = -1;
+  var exhibitor_move = false;
+
   var mouseX, mouseY;
   var touchX = 0;
   var touchY = 0;
@@ -112,6 +119,7 @@ window.onload = function() {
   // mouse
   canvas.onmousedown=function(e){
     adjustLocation(e);
+    exhibitor_move = true;
     return false;
   }
 
@@ -122,19 +130,31 @@ window.onload = function() {
 
   canvas.onmouseup=function(e){
     adjustLocation(e);
+    exhibitor_move = false;
     return false;
   }
 
   // touch
   canvas.ontouchstart=function(){
+    e=event.touches[0];    // first touch only
+    adjustLocation(e);
+    event.preventDefault();
+    exhibitor_move = true;
     return false;
   }
 
   canvas.ontouchmove=function(e){
+    e=event.touches[0];    // first touch only
+    adjustLocation(e);
+    event.preventDefault();
     return false;
   }
 
   canvas.ontouchend=function(e){
+    e=event.touches[0];    // first touch only
+    adjustLocation(e);
+    event.preventDefault();
+    exhibitor_move = false;
     return false;
   }
 
@@ -167,6 +187,9 @@ window.onload = function() {
       person_playing[i] = 0;
     }
 
+    exhibitor_booth = Math.floor(Math.random() * NUM_OF_BOOTH);
+    exhibitor_x = booth_x[exhibitor_booth];
+    exhibitor_y = booth_y[exhibitor_booth];
   }
 
   function adjustLocation(e){
@@ -178,6 +201,9 @@ window.onload = function() {
     touchVisualizerX = mouseX;
     touchVisualizerY = mouseY;
     touchVisualizerCounter = 30;
+
+    exhibitor_x_click = mouseX;
+    exhibitor_y_click = mouseY;
 
     if(game_over == true && game_over_touchlock == 0){
       init_game();
@@ -236,6 +262,16 @@ window.onload = function() {
      }
     }
 
+    // Draw Exhibitor
+    ctx.strokeStyle = 'black';
+    ctx.beginPath();
+    ctx.arc(exhibitor_x, exhibitor_y, 10, 0, Math.PI*2, true);
+
+    ctx.moveTo(exhibitor_x, exhibitor_y);    // Draw Exhibitor - booth line
+    ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
+    ctx.stroke();
+
+
     // Draw Time
     ctx.fillStyle = 'rgba(0, 0, 0)';
     var time_size = 1;  // 0-1
@@ -283,6 +319,14 @@ window.onload = function() {
         }
         score_on_screen = score;
        return;
+    }
+
+    // move Exhibitor
+    if(exhibitor_move==true){
+      var move_length_pow = Math.pow(exhibitor_x - exhibitor_x_click, 2) + Math.pow(exhibitor_y - exhibitor_y_click, 2);
+      var move_length = Math.sqrt(move_length_pow);
+      exhibitor_x = exhibitor_x - (exhibitor_x - exhibitor_x_click) / move_length;
+      exhibitor_y = exhibitor_y - (exhibitor_y - exhibitor_y_click) / move_length;
     }
 
     // move persons
