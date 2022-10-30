@@ -293,7 +293,7 @@ window.onload = function() {
     // Draw Exhibitor circle
     if(genre_switch_circle_ripples == true){
       ctx.beginPath();
-      ctx.strokeStyle = GameCateogryColor[exhibitor_booth];
+      ctx.strokeStyle = GameCateogryColor[booth_gamecategory[exhibitor_booth]];
       ctx.arc(exhibitor_x, exhibitor_y, genre_switch_circle_radius, 0, Math.PI*2, true);
       ctx.stroke();
     }
