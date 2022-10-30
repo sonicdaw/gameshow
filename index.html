@@ -80,6 +80,11 @@ window.onload = function() {
   var exhibitor_booth = -1;
   var exhibitor_move = false;
 
+  var genre_switch_circle_radius = 0;
+  var genre_switch_circle_radius_ = 0;
+  var genre_switch_circle_radius_max = 0;
+  var genre_switch_circle_ripples = false;
+
   var mouseX, mouseY;
   var touchX = 0;
   var touchY = 0;
@@ -120,6 +125,8 @@ window.onload = function() {
   canvas.onmousedown=function(e){
     adjustLocation(e);
     exhibitor_move = true;
+    genre_switch_circle_radius = 0;
+    genre_switch_circle_ripples = false;
     return false;
   }
 
@@ -131,6 +138,8 @@ window.onload = function() {
   canvas.onmouseup=function(e){
     adjustLocation(e);
     exhibitor_move = false;
+    genre_switch_circle_radius = 0;
+    genre_switch_circle_ripples = true;
     return false;
   }
 
@@ -140,6 +149,8 @@ window.onload = function() {
     adjustLocation(e);
     event.preventDefault();
     exhibitor_move = true;
+    genre_switch_circle_radius = 0;
+    genre_switch_circle_ripples = false;
     return false;
   }
 
@@ -155,6 +166,8 @@ window.onload = function() {
     adjustLocation(e);
     event.preventDefault();
     exhibitor_move = false;
+    genre_switch_circle_radius = 0;
+    genre_switch_circle_ripples = true;
     return false;
   }
 
@@ -271,6 +284,19 @@ window.onload = function() {
     ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
     ctx.stroke();
 
+    // Draw Exhibitor guide circle
+    ctx.beginPath();
+    ctx.strokeStyle = 'gray';
+    ctx.arc(exhibitor_x, exhibitor_y, genre_switch_circle_radius_max, 0, Math.PI*2, true);
+    ctx.stroke();
+
+    // Draw Exhibitor circle
+    if(genre_switch_circle_ripples == true){
+      ctx.beginPath();
+      ctx.strokeStyle = GameCateogryColor[exhibitor_booth];
+      ctx.arc(exhibitor_x, exhibitor_y, genre_switch_circle_radius, 0, Math.PI*2, true);
+      ctx.stroke();
+    }
 
     // Draw Time
     ctx.fillStyle = 'rgba(0, 0, 0)';
@@ -327,6 +353,19 @@ window.onload = function() {
       var move_length = Math.sqrt(move_length_pow);
       exhibitor_x = exhibitor_x - (exhibitor_x - exhibitor_x_click) / move_length;
       exhibitor_y = exhibitor_y - (exhibitor_y - exhibitor_y_click) / move_length;
+
+      var move_length_pow = Math.pow(exhibitor_x - booth_x[exhibitor_booth], 2) + Math.pow(exhibitor_y - booth_y[exhibitor_booth], 2);
+      var move_length = Math.sqrt(move_length_pow);
+      genre_switch_circle_radius_max = move_length;
+    }
+
+    // move Exhibitor genre switch guide circle
+    if(genre_switch_circle_ripples == true){
+      genre_switch_circle_radius++;
+      if(genre_switch_circle_radius > genre_switch_circle_radius_max){
+        genre_switch_circle_radius = 0;
+        genre_switch_circle_ripples = false;
+      }
     }
 
     // move persons
