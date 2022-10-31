@@ -28,7 +28,7 @@ window.onload = function() {
   var game_over_touchlock = 0;
 
   var counter = 0;
-  const NUM_OF_BOOTH = 25;
+  const NUM_OF_BOOTH = 50;
 
   var canvas = document.getElementById('cvs');
   if (!canvas.getContext) {
@@ -182,11 +182,35 @@ window.onload = function() {
     game_over = false;
     game_over_touchlock = 0;
     counter = 0;
+
     for(var i = 0; i < NUM_OF_BOOTH; i++)
     {
-      booth_x[i] = Math.floor(Math.random() * FIELD_WIDTH);
-      booth_y[i] =  Math.floor(Math.random() * FIELD_HEIGHT);
-      booth_size[i] =  Math.floor(Math.random() * BOOTH_SIZE_MAX);
+      booth_x[i] = 0;
+      booth_y[i] = 0;
+      booth_size[i] = 0;
+    }
+
+    // create booth
+    var x = 0;
+    var y = 0;
+    var size = 0;
+    var half_booth_size = 0;
+    for(var i = 0; i < NUM_OF_BOOTH; i++)
+    {
+      do{
+        x = Math.floor(Math.random() * FIELD_WIDTH);
+        y = Math.floor(Math.random() * FIELD_HEIGHT);
+        size =  Math.floor(Math.random() * BOOTH_SIZE_MAX);
+        half_size = size / 2;
+      }while(
+        inBooth(x - half_size, y - half_size) == true ||
+        inBooth(x - half_size, y + half_size) == true ||
+        inBooth(x + half_size, y - half_size) == true ||
+        inBooth(x + half_size, y + half_size) == true
+      )
+      booth_x[i] = x;
+      booth_y[i] = y;
+      booth_size[i] = size;
       booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
     }
 
@@ -250,8 +274,8 @@ window.onload = function() {
   function inBooth(x,y){
     var inSomeBooth = false;
     for(var j = 0; j < NUM_OF_BOOTH; j++){  // person is not in booth
-      if((booth_x[j] - booth_size[j] / 2) < x && x < (booth_x[j] + booth_size[j] / 2) &&
-         (booth_y[j] - booth_size[j] / 2) < y && y < (booth_y[j] + booth_size[j] / 2)) {
+      if((booth_x[j] - booth_size[j] / 2) <= x && x <= (booth_x[j] + booth_size[j] / 2) &&
+         (booth_y[j] - booth_size[j] / 2) <= y && y <= (booth_y[j] + booth_size[j] / 2)) {
         inSomeBooth = true;
         break;
       }
