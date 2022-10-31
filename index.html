@@ -162,7 +162,7 @@ window.onload = function() {
   }
 
   canvas.ontouchend=function(e){
-    e=event.touches[0];    // first touch only
+    e=event.changedTouches[0];    // first touch only
     adjustLocation(e);
     event.preventDefault();
     exhibitor_move = false;
