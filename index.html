@@ -247,6 +247,18 @@ window.onload = function() {
     return result;
   }
 
+  function inBooth(x,y){
+    var inSomeBooth = false;
+    for(var j = 0; j < NUM_OF_BOOTH; j++){  // person is not in booth
+      if((booth_x[j] - booth_size[j] / 2) < x && x < (booth_x[j] + booth_size[j] / 2) &&
+         (booth_y[j] - booth_size[j] / 2) < y && y < (booth_y[j] + booth_size[j] / 2)) {
+        inSomeBooth = true;
+        break;
+      }
+    }
+    return inSomeBooth;
+  }
+
   // DRAW
   function draw(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -367,15 +379,7 @@ window.onload = function() {
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
         var person_length_pow = Math.pow(exhibitor_x - person_x[i], 2) + Math.pow(exhibitor_y - person_y[i], 2);
         if(circle_radius_pow > person_length_pow){  // person is in circle
-          var inSomeBooth = false;
-          for(var j = 0; j < NUM_OF_BOOTH; j++){  // person is not in booth (Defend by booth)
-            if((booth_x[j] - booth_size[j] / 2) < person_x[i] && person_x[i] < (booth_x[j] + booth_size[j] / 2) &&
-               (booth_y[j] - booth_size[j] / 2) < person_y[i] && person_y[i] < (booth_y[j] + booth_size[j] / 2)) {
-                inSomeBooth = true;
-                break;
-            }
-          }
-          if(inSomeBooth == false){             // Person is out of booth
+          if(inBooth(person_x[i], person_y[i]) == false){             // Person is out of booth
               person_gamecategory[i] = booth_gamecategory[exhibitor_booth];// replace genre
             }
         }
