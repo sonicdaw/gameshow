@@ -188,6 +188,17 @@ window.onload = function() {
       setBooth(i);
     }
 
+    // Recreate overlapped booth
+    while(BoothOverlap()){
+      for(var i = 0; i < NUM_OF_BOOTH; i++){
+        var overlappedBoothNumber = boothInBooth(i);
+        while(overlappedBoothNumber > 0 && overlappedBoothNumber != i){
+          setBooth(i);
+          overlappedBoothNumber = boothInBooth(booth_x[i], booth_y[i], booth_size[i]);
+        }
+      }
+    }
+
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
     {
       person_in_field[i] = false;
@@ -248,20 +259,52 @@ window.onload = function() {
   function setBooth(i){
     booth_x[i] = Math.floor(Math.random() * FIELD_WIDTH);
     booth_y[i] = Math.floor(Math.random() * FIELD_HEIGHT);
-    booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX);
+    booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
     booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
   }
 
-  function inBooth(x,y){
-    var inSomeBooth = false;
-    for(var j = 0; j < NUM_OF_BOOTH; j++){  // person is not in booth
+  function inBooth(x,y,boothNumber){  // Set boothNumber -1 when x,y is not axis for booth.
+    var boothNuminSomeBooth = -1;
+    for(var j = 0; j < NUM_OF_BOOTH; j++){
+      if(j==boothNumber) continue;
       if((booth_x[j] - booth_size[j] / 2) <= x && x <= (booth_x[j] + booth_size[j] / 2) &&
          (booth_y[j] - booth_size[j] / 2) <= y && y <= (booth_y[j] + booth_size[j] / 2)) {
-        inSomeBooth = true;
+          boothNuminSomeBooth = j;
         break;
       }
     }
-    return inSomeBooth;
+    return boothNuminSomeBooth;
+  }
+
+  function boothInBooth(boothNumber){
+    var boothInBooth = -1;
+    var x = booth_x[boothNumber];
+    var y = booth_y[boothNumber];
+    var size = booth_size[boothNumber];
+    var halfSize = size / 2;
+
+    var topLeft =     inBooth(x - halfSize, y - halfSize, boothNumber);
+    var topRight =    inBooth(x + halfSize, y - halfSize, boothNumber);
+    var bottomLeft =  inBooth(x - halfSize, y + halfSize, boothNumber);
+    var bottomRight = inBooth(x + halfSize, y + halfSize, boothNumber);
+    if(topLeft >= 0)     boothInBooth = topLeft;
+    if(topRight >= 0)    boothInBooth = topRight;
+    if(bottomLeft >= 0)  boothInBooth = bottomLeft;
+    if(bottomRight >= 0) boothInBooth = bottomRight;
+
+    return boothInBooth;
+  }
+
+  function BoothOverlap(){
+    var BoothOverlap = false;
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      var overlappedBoothNumber = boothInBooth(i);
+      if( overlappedBoothNumber >= 0){  // Overlapped and it's not the booth itself
+          BoothOverlap = true;
+          break;
+        }
+    }
+    return BoothOverlap;
   }
 
   // DRAW
@@ -384,7 +427,7 @@ window.onload = function() {
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
         var person_length_pow = Math.pow(exhibitor_x - person_x[i], 2) + Math.pow(exhibitor_y - person_y[i], 2);
         if(circle_radius_pow > person_length_pow){  // person is in circle
-          if(inBooth(person_x[i], person_y[i]) == false){             // Person is out of booth
+          if(inBooth(person_x[i], person_y[i], -1) < 0){             // Person is out of booth
               person_gamecategory[i] = booth_gamecategory[exhibitor_booth];// replace genre
             }
         }
