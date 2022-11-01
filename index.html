@@ -183,35 +183,9 @@ window.onload = function() {
     game_over_touchlock = 0;
     counter = 0;
 
-    for(var i = 0; i < NUM_OF_BOOTH; i++)
-    {
-      booth_x[i] = 0;
-      booth_y[i] = 0;
-      booth_size[i] = 0;
-    }
-
     // create booth
-    var x = 0;
-    var y = 0;
-    var size = 0;
-    var half_booth_size = 0;
-    for(var i = 0; i < NUM_OF_BOOTH; i++)
-    {
-      do{
-        x = Math.floor(Math.random() * FIELD_WIDTH);
-        y = Math.floor(Math.random() * FIELD_HEIGHT);
-        size =  Math.floor(Math.random() * BOOTH_SIZE_MAX);
-        half_size = size / 2;
-      }while(
-        inBooth(x - half_size, y - half_size) == true ||
-        inBooth(x - half_size, y + half_size) == true ||
-        inBooth(x + half_size, y - half_size) == true ||
-        inBooth(x + half_size, y + half_size) == true
-      )
-      booth_x[i] = x;
-      booth_y[i] = y;
-      booth_size[i] = size;
-      booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      setBooth(i);
     }
 
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
@@ -269,6 +243,13 @@ window.onload = function() {
       }
     }
     return result;
+  }
+
+  function setBooth(i){
+    booth_x[i] = Math.floor(Math.random() * FIELD_WIDTH);
+    booth_y[i] = Math.floor(Math.random() * FIELD_HEIGHT);
+    booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX);
+    booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
   }
 
   function inBooth(x,y){
