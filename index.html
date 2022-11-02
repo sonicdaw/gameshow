@@ -89,6 +89,8 @@ window.onload = function() {
   var genre_switch_circle_genre = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_ripples = false;
 
+  var genre_switch_circle_counter = 0;
+  const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
 
   var mouseX, mouseY;
   var touchX = 0;
@@ -224,6 +226,8 @@ window.onload = function() {
       genre_switch_circle_radius_max[i] = 0;
       genre_switch_circle_genre[i] = 0;
     }
+
+    genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
   }
 
   function adjustLocation(e){
@@ -459,10 +463,18 @@ window.onload = function() {
         var circle_length_pow = Math.pow(genre_switch_circle_radius[c], 2);
         if(circle_length_pow > person_length_pow){  // person is in circle
           if(inBooth(person_x[i], person_y[i], -1) < 0){             // Person is out of booth
-            person_gamecategory[i] = booth_gamecategory[exhibitor_booth];// replace genre
+            person_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
           }
         }
       }
+    }
+
+    // Set Booth genre appeal circle
+    genre_switch_circle_counter--;
+    if(genre_switch_circle_counter <= 0){
+      var boothToSetCircle = Math.floor(Math.random() * NUM_OF_BOOTH);
+      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5);
+      genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);  // set new counter
     }
 
     // move persons
