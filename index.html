@@ -73,6 +73,7 @@ window.onload = function() {
   var person_gamecategory = new Array(NUM_OF_PEOPLE);
   var person_booth_visit_list = new Array(NUM_OF_PEOPLE);
   var person_playing = new Array(NUM_OF_PEOPLE);
+  var person_is_press = new Array(NUM_OF_PEOPLE);
 
   var exhibitor_x = -1;
   var exhibitor_y = -1;
@@ -212,6 +213,7 @@ window.onload = function() {
       person_gamecategory[i] = 0;
       person_booth_visit_list[i] = [];
       person_playing[i] = 0;
+      person_is_press[i] = false;
     }
 
     exhibitor_booth = Math.floor(Math.random() * NUM_OF_BOOTH);
@@ -360,6 +362,11 @@ window.onload = function() {
       ctx.strokeStyle = GameCateogryColor[person_gamecategory[i]];
       ctx.beginPath();
       ctx.arc(person_x[i], person_y[i], 3 * size + Math.abs(person_playing[i]/100), 0, Math.PI*2, true);
+      if(person_is_press[i]){
+        ctx.textAlign = "Center";
+        ctx.font = "8pt 'Times New Roman'";
+        ctx.fillText("PRESS", person_x[i], person_y[i]);
+      }
       ctx.stroke();
      }
     }
@@ -562,6 +569,9 @@ window.onload = function() {
           person_x[i] =  FIELD_WIDTH;
           person_y[i] =  FIELD_HEIGHT / 2;
           person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+          if(Math.random() < 0.05){
+            person_is_press[i] = true;
+          }
           break;
         }
       }
