@@ -455,6 +455,11 @@ window.onload = function() {
     ctx.font = "10pt 'Times New Roman'";
     ctx.fillText("Trend", LEFT_OFFSET, TOP_OFFSET + 20);
     for(var i = 0; i < NUM_OF_BOOTH; i++){
+      if(i==exhibitor_booth){
+        ctx.fillStyle = "red";
+      }else{
+        ctx.fillStyle = "black";
+      }
       ctx.fillText(i + ": " + booth_trend_score[i], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
     }
     ctx.stroke();
