@@ -51,15 +51,8 @@ window.onload = function() {
     simulation: 6
   };
 
-  var GameCateogryColor = new Array(
-    'blue',
-    'red',
-    'yellow',
-    'purple',
-    'black',
-    'green',
-    'cyan'
-    );
+  var GameCateogryColor = new Array('blue', 'red', 'yellow', 'purple', 'black', 'green', 'cyan');
+  var GameCateogryText = new Array('Shooting', 'Action', 'RPG', 'Adventure', 'Race', 'Puzzle', 'Simulation');
 
   var booth_x = new Array(NUM_OF_BOOTH);
   var booth_y =  new Array(NUM_OF_BOOTH);
@@ -351,6 +344,9 @@ window.onload = function() {
       ctx.strokeStyle = GameCateogryColor[booth_gamecategory[i]];
       ctx.rect(booth_x[i]- booth_size[i] / 2, booth_y[i]- booth_size[i] / 2,
       booth_size[i],                         booth_size[i]);
+      ctx.textAlign = "left";
+      ctx.font = "8pt 'Times New Roman'";
+      ctx.fillText(i + ": " + GameCateogryText[booth_gamecategory[i]], booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
       ctx.stroke();
     }
 
