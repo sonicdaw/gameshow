@@ -449,6 +449,16 @@ window.onload = function() {
        return;
     }
 
+    // Draw Trend Ranking
+    ctx.beginPath();
+    ctx.textAlign = "left";
+    ctx.font = "10pt 'Times New Roman'";
+    ctx.fillText("Trend", LEFT_OFFSET, TOP_OFFSET + 20);
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      ctx.fillText(i + ": " + booth_trend_score[i], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
+    }
+    ctx.stroke();
+
     // move Exhibitor
     if(exhibitor_move==true){
       var move_length_pow = Math.pow(exhibitor_x - exhibitor_x_click, 2) + Math.pow(exhibitor_y - exhibitor_y_click, 2);
