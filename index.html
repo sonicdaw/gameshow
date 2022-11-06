@@ -87,6 +87,8 @@ window.onload = function() {
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
 
+  var trend_ranking = [];
+
   var mouseX, mouseY;
   var touchX = 0;
   var touchY = 0;
@@ -198,6 +200,8 @@ window.onload = function() {
         }
       }
     }
+    update_trend_ranking();
+
 
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
     {
@@ -333,6 +337,17 @@ window.onload = function() {
     }
   }
 
+  function update_trend_ranking(){
+    trend_ranking .length = 0;
+    for(var i = NUM_OF_BOOTH - 1; i >= 0; i--){
+      trend_ranking.push([i, booth_trend_score[i]]);
+    }
+    trend_ranking.sort((a,b) => {
+      return(a[1] - b[1])
+    })
+    trend_ranking.reverse();
+  }
+
   // DRAW
   function draw(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -461,6 +476,12 @@ window.onload = function() {
         ctx.fillStyle = "black";
       }
       ctx.fillText(i + ": " + booth_trend_score[i], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
+      if(trend_ranking[i][0]==exhibitor_booth){
+        ctx.fillStyle = "red";
+      }else{
+        ctx.fillStyle = "black";
+      }
+      ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], FIELD_WIDTH - 100, TOP_OFFSET + 35 + i * 15);
     }
     ctx.stroke();
 
@@ -557,6 +578,7 @@ window.onload = function() {
              }else{
                booth_trend_score[j]++;  // Booth Trend Point Up
              }
+             update_trend_ranking();      // update ranking
            }
            break;
          }
