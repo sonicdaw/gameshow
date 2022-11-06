@@ -59,6 +59,7 @@ window.onload = function() {
   var booth_size =  new Array(NUM_OF_BOOTH);
   var booth_gamecategory = new Array(NUM_OF_BOOTH);
   var booth_trend_score = new Array(NUM_OF_BOOTH);
+  var booth_news_count = new Array(NUM_OF_BOOTH);
   const BOOTH_SIZE_MAX = 100;
 
   var person_in_field = new Array(NUM_OF_PEOPLE);
@@ -88,6 +89,7 @@ window.onload = function() {
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
 
   var trend_ranking = [];
+  var world_awake = false;
 
   var mouseX, mouseY;
   var touchX = 0;
@@ -278,6 +280,7 @@ window.onload = function() {
     booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
     booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
     booth_trend_score[i] = 0;
+    booth_news_count[i] = 0;
   }
 
   function inBooth(x,y,boothNumber){  // Set boothNumber -1 when x,y is not axis for booth.
@@ -366,6 +369,8 @@ window.onload = function() {
       ctx.fillText(i + ": " + GameCateogryText[booth_gamecategory[i]], booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
       ctx.textAlign = "right";
       ctx.fillText("Trend: " + booth_trend_score[i], booth_x[i] + booth_size[i] / 2, booth_y[i] + booth_size[i] / 2);
+      if(booth_news_count[i] > 0)
+        ctx.fillText("News x" + booth_news_count[i], booth_x[i] + booth_size[i] / 2, booth_y[i] - booth_size[i] / 2 + 10);
       ctx.stroke();
     }
 
@@ -485,6 +490,16 @@ window.onload = function() {
     }
     ctx.stroke();
 
+    // Draw World Arake
+    if(world_awake){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "red";
+      ctx.fillText("World Awake", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.stroke();
+    }
+
     // move Exhibitor
     if(exhibitor_move==true){
       var move_length_pow = Math.pow(exhibitor_x - exhibitor_x_click, 2) + Math.pow(exhibitor_y - exhibitor_y_click, 2);
@@ -524,6 +539,12 @@ window.onload = function() {
    for(var i = 0; i < NUM_OF_PEOPLE; i++){
      if(person_in_field[i] == true){
 
+      if(world_awake){    // World Awake and go to exhibitor booth
+        var x_diff = booth_x[exhibitor_booth] - person_x[i];
+        var y_diff = booth_y[exhibitor_booth] - person_y[i];
+        if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
+        if(y_diff != 0) person_y[i] = person_y[i] + y_diff / Math.abs(y_diff);
+      }else{
        // Find Near Booth interested in
        var near_booth_interested_in = -1;
        var near_distance = -1;
@@ -546,6 +567,7 @@ window.onload = function() {
          if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
          if(y_diff != 0) person_y[i] = person_y[i] + y_diff / Math.abs(y_diff);
        }
+      }
 
        // Keep distance
        for(var k = 0; k < NUM_OF_PEOPLE; k++){  // Keep distance
@@ -575,6 +597,10 @@ window.onload = function() {
              person_playing[i] = 0;
              if(person_is_press[i]){
                booth_trend_score[j] += 10;  // Booth Trend Point Up for press
+               booth_news_count[j]++;
+               if(booth_news_count[j] == 3 && j==exhibitor_booth){      // World_Awake
+                 world_awake = true;
+               }
              }else{
                booth_trend_score[j]++;  // Booth Trend Point Up
              }
