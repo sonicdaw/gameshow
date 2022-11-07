@@ -572,14 +572,17 @@ window.onload = function() {
            if(distance < 100){ // Near! Keep Distance!
             var x_diff = person_x[k] - person_x[i];
             var y_diff = person_y[k] - person_y[i];
+            var rand_5 = 3;
+            if(inBooth(person_x[k],person_y[k],-1) == false)
+              rand_5 = Math.floor(Math.random() * 6);
             if(x_diff != 0)
-              person_x[i] = person_x[i] - (x_diff / Math.abs(x_diff)) * Math.floor(Math.random() * 6);
+              person_x[i] = person_x[i] - (x_diff / Math.abs(x_diff)) * rand_5;
             else
-              person_x[i] = person_x[i] - (Math.floor(Math.random() * 6) - 3);   // 0 case
+              person_x[i] = person_x[i] - (rand_5 - 3);   // 0 case
             if(y_diff != 0)
-              person_y[i] = person_y[i] - (y_diff / Math.abs(y_diff)) * Math.floor(Math.random() * 6);
+              person_y[i] = person_y[i] - (y_diff / Math.abs(y_diff)) * rand_5;
             else
-              person_y[i] = person_y[i] - (Math.floor(Math.random() * 6) - 3);   // 0 case
+              person_y[i] = person_y[i] - (rand_5 - 3);   // 0 case
            }
         }
        }
