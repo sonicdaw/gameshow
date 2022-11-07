@@ -193,7 +193,8 @@ window.onload = function() {
     }
 
     // Recreate overlapped booth
-    while(BoothOverlap()){
+    var stageCreateTimeout = 0;
+    while(BoothOverlap() && stageCreateTimeout < 10){
       for(var i = 0; i < NUM_OF_BOOTH; i++){
         var overlappedBoothNumber = boothInBooth(i);
         while(overlappedBoothNumber > 0 && overlappedBoothNumber != i){
@@ -201,6 +202,7 @@ window.onload = function() {
           overlappedBoothNumber = boothInBooth(booth_x[i], booth_y[i], booth_size[i]);
         }
       }
+      stageCreateTimeout++;
     }
     update_trend_ranking();
 
