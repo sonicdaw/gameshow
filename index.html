@@ -89,7 +89,7 @@ window.onload = function() {
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
 
   var trend_ranking = [];
-  var world_awake = false;
+  var world_awake = 0;
 
   var mouseX, mouseY;
   var touchX = 0;
@@ -485,13 +485,15 @@ window.onload = function() {
     ctx.stroke();
 
     // Draw World Arake
-    if(world_awake){
+    if(world_awake > 0){
       ctx.beginPath();
       ctx.textAlign = "center";
       ctx.font = "50pt 'Times New Roman'";
       ctx.fillStyle = "red";
       ctx.fillText("World Awake", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.fillText(world_awake, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
       ctx.stroke();
+      world_awake--;
     }
 
     // move Exhibitor
@@ -533,7 +535,7 @@ window.onload = function() {
    for(var i = 0; i < NUM_OF_PEOPLE; i++){
      if(person_in_field[i] == true){
 
-      if(world_awake){    // World Awake and go to exhibitor booth
+      if(world_awake > 0){    // World Awake and go to exhibitor booth
         var x_diff = booth_x[exhibitor_booth] - person_x[i];
         var y_diff = booth_y[exhibitor_booth] - person_y[i];
         if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
@@ -593,7 +595,7 @@ window.onload = function() {
                booth_trend_score[j] += 10;  // Booth Trend Point Up for press
                booth_news_count[j]++;
                if(booth_news_count[j] == 3 && j==exhibitor_booth){      // World_Awake
-                 world_awake = true;
+                 world_awake = 2000;
                }
              }else{
                booth_trend_score[j]++;  // Booth Trend Point Up
