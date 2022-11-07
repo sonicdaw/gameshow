@@ -475,18 +475,12 @@ window.onload = function() {
     ctx.font = "10pt 'Times New Roman'";
     ctx.fillText("Trend", LEFT_OFFSET, TOP_OFFSET + 20);
     for(var i = 0; i < NUM_OF_BOOTH; i++){
-      if(i==exhibitor_booth){
-        ctx.fillStyle = "red";
-      }else{
-        ctx.fillStyle = "black";
-      }
-      ctx.fillText(i + ": " + booth_trend_score[i], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
       if(trend_ranking[i][0]==exhibitor_booth){
         ctx.fillStyle = "red";
       }else{
         ctx.fillStyle = "black";
       }
-      ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], FIELD_WIDTH - 100, TOP_OFFSET + 35 + i * 15);
+      ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
     }
     ctx.stroke();
 
