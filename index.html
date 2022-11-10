@@ -84,6 +84,7 @@ window.onload = function() {
   var genre_switch_circle_radius_max = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_genre = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_ripples = false;
+  var genre_switch_circle_velocity = new Array(NUM_OF_CIRCLE);
 
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
@@ -229,6 +230,7 @@ window.onload = function() {
       genre_switch_circle_radius[i] = 0;
       genre_switch_circle_radius_max[i] = 0;
       genre_switch_circle_genre[i] = 0;
+      genre_switch_circle_velocity[i] = 0;
     }
 
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
@@ -337,6 +339,7 @@ window.onload = function() {
         genre_switch_circle_radius[i] = 0;
         genre_switch_circle_radius_max[i] = radius_max_pow;
         genre_switch_circle_genre[i] = genere;
+        genre_switch_circle_velocity[i] = 3;
         break;
       }
     }
@@ -415,7 +418,9 @@ window.onload = function() {
         ctx.strokeStyle = GameCateogryColor[genre_switch_circle_genre[i]];
         ctx.arc(genre_switch_circle_x[i], genre_switch_circle_y[i], genre_switch_circle_radius[i], 0, Math.PI*2, true);
         ctx.stroke();
-        genre_switch_circle_radius[i]++;
+        genre_switch_circle_radius[i]+= genre_switch_circle_velocity[i];
+        if(genre_switch_circle_velocity[i] > 0.7)
+          genre_switch_circle_velocity[i] -= 0.05;
         if(genre_switch_circle_radius[i] > genre_switch_circle_radius_max[i]){
           genre_switch_circle_radius_max[i] = 0;  // OFF
         }
