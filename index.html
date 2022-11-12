@@ -582,7 +582,7 @@ window.onload = function() {
        // move to nearest booth (j)
        if(near_booth_interested_in == -1){
          person_x[i]--;
-       }else{
+       }else if(person_playing[i] == 0){  // Not playing
          var x_diff = booth_x[near_booth_interested_in] - person_x[i];
          var y_diff = booth_y[near_booth_interested_in] - person_y[i];
          if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
@@ -592,7 +592,7 @@ window.onload = function() {
 
        // Keep distance
        for(var k = 0; k < NUM_OF_PEOPLE; k++){  // Keep distance
-         if( i != k && person_in_field[k] == true){
+         if( i != k && person_in_field[k] == true && person_playing[i] == 0){
            var distance = Math.pow(person_x[i] - person_x[k], 2) + Math.pow(person_y[i] - person_y[k], 2);
            if(distance < 100){ // Near! Keep Distance!
             var x_diff = person_x[k] - person_x[i];
@@ -614,7 +614,7 @@ window.onload = function() {
 
        // Visit
        for(var j = 0; j < NUM_OF_BOOTH; j++){
-         if(Math.abs(booth_x[j] - person_x[i]) < 10 && Math.abs(booth_y[j] - person_y[i]) < 10){
+         if(Math.abs(booth_x[j] - person_x[i]) < 1 && Math.abs(booth_y[j] - person_y[i]) < 1 && near_booth_interested_in == j){
            person_playing[i]++;
            if(person_playing[i] > 500){
              person_booth_visit_list[i].push(j);
