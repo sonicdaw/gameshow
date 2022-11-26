@@ -21,7 +21,7 @@ window.onload = function() {
   var time_hour = 6;
   var time_minute = 0;
   var time_sec = 0;
-  var time_day = 0;
+  var time_day = 1;
   const time_minute_max = 60;
   const time_sec_max = 50;
   var game_over = false;
@@ -184,7 +184,7 @@ window.onload = function() {
     time_hour = 10;
     time_minute = 0;
     time_sec = 0;
-    time_day = 0;
+    time_day = 1;
 
     game_over = false;
     game_over_touchlock = 0;
@@ -208,7 +208,10 @@ window.onload = function() {
       stageCreateTimeout++;
     }
     update_trend_ranking();
+    initForNextDay();
+  }
 
+  function initForNextDay(){
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
     {
       person_in_field[i] = false;
@@ -487,9 +490,9 @@ window.onload = function() {
       text_minutes = time_minute;
     }
     if(time_hour < 12){
-      ctx.fillText("AM " + time_hour + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+      ctx.fillText("Day " + time_day + " AM " + time_hour + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
     }else{
-      ctx.fillText("PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+      ctx.fillText("Day " + time_day + " PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
     }
     ctx.font = DEFAULT_FONT;
 
@@ -669,9 +672,10 @@ window.onload = function() {
       time_hour++;
       time_minute = 0;
     }
-    if(time_hour > 23){
+    if(time_hour > 18){
       time_day++;
       time_hour = 0;
+      initForNextDay();
     }
 
     ctx.fillStyle = "#000";
