@@ -209,7 +209,6 @@ window.onload = function() {
     }
     update_trend_ranking();
 
-
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
     {
       person_in_field[i] = false;
@@ -226,6 +225,7 @@ window.onload = function() {
     exhibitor_x = booth_x[exhibitor_booth];
     exhibitor_y = booth_y[exhibitor_booth];
     exhibitor_circle_radius_max_pow = 0;
+    update_exhibitor_circle_radius_max_pow();
 
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
       genre_switch_circle_x[i] = 0;
@@ -366,6 +366,10 @@ window.onload = function() {
       return(a[1] - b[1])
     })
     trend_ranking.reverse();
+  }
+
+  function update_exhibitor_circle_radius_max_pow(){
+    exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 2 + 30;
   }
 
   function setNextBooth(people_index){
@@ -551,9 +555,9 @@ window.onload = function() {
       exhibitor_x = exhibitor_x - (exhibitor_x - exhibitor_x_click) / move_length;
       exhibitor_y = exhibitor_y - (exhibitor_y - exhibitor_y_click) / move_length;
 
-      var move_length_pow = Math.pow(exhibitor_x - booth_x[exhibitor_booth], 2) + Math.pow(exhibitor_y - booth_y[exhibitor_booth], 2);
-      var move_length = Math.sqrt(move_length_pow);
-      exhibitor_circle_radius_max_pow = move_length;
+//      var move_length_pow = Math.pow(exhibitor_x - booth_x[exhibitor_booth], 2) + Math.pow(exhibitor_y - booth_y[exhibitor_booth], 2);
+//      var move_length = Math.sqrt(move_length_pow);
+//      exhibitor_circle_radius_max_pow = move_length;
     }
 
     // genre switch circle
@@ -642,6 +646,9 @@ window.onload = function() {
              booth_trend_score[next_booth]++;  // Booth Trend Point Up
            }
            update_trend_ranking();      // update ranking
+           if(next_booth == exhibitor_booth){ // update exhibitor_circle_radius_max_pow
+             update_exhibitor_circle_radius_max_pow();
+           }
          }
        }
      }
