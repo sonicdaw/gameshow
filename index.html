@@ -88,6 +88,7 @@ window.onload = function() {
   var genre_switch_circle_genre = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_ripples = false;
   var genre_switch_circle_velocity = new Array(NUM_OF_CIRCLE);
+  var genre_switch_circle_type = new Array(NUM_OF_CIRCLE);		// 0: ripple by booth, 1: ripple by laser
 
   var genre_laser_from_x = new Array(NUM_OF_LASER);
   var genre_laser_from_y = new Array(NUM_OF_LASER);
@@ -154,7 +155,7 @@ window.onload = function() {
   canvas.onmouseup=function(e){
     adjustLocation(e);
     exhibitor_move = false;
-    setExhibitor_GenreAppeal();
+    setExhibitor_laser();
     return false;
   }
 
@@ -181,7 +182,7 @@ window.onload = function() {
     adjustLocation(e);
     event.preventDefault();
     exhibitor_move = false;
-    setExhibitor_GenreAppeal();
+    setExhibitor_laser();
     return false;
   }
 
@@ -252,6 +253,7 @@ window.onload = function() {
       genre_switch_circle_radius_max[i] = 0;
       genre_switch_circle_genre[i] = 0;
       genre_switch_circle_velocity[i] = 0;
+      genre_switch_circle_type[i] = 0;
     }
 
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
@@ -366,7 +368,7 @@ window.onload = function() {
     }
   }
 
-  function setGenreAppeal(x, y, genere, radius_max_pow){
+  function setGenreAppeal(x, y, genere, radius_max_pow, type){
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
       if(genre_switch_circle_radius_max[i] == 0){
         genre_switch_circle_x[i] = x;
@@ -375,14 +377,14 @@ window.onload = function() {
         genre_switch_circle_radius_max[i] = radius_max_pow;
         genre_switch_circle_genre[i] = genere;
         genre_switch_circle_velocity[i] = 3;
+        genre_switch_circle_type[i] = type;
         break;
       }
     }
   }
 
-  function setExhibitor_GenreAppeal(){
+  function setExhibitor_laser(){
     if(booth_life[exhibitor_booth]>10){
-//      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow);
       setLaser(exhibitor_x, exhibitor_y);
       booth_life[exhibitor_booth]-=10;
       if(booth_life[exhibitor_booth]<0) booth_life[exhibitor_booth] = 0;
@@ -596,7 +598,7 @@ window.onload = function() {
         ctx.stroke();
         genre_laser_to_width[i]++;
         if(genre_laser_to_width[i]>100){
-          setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow);
+          setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 1/* by laser */);
           genre_laser_to_width[i] = 0;		// reset
         }
         break;
@@ -625,7 +627,11 @@ window.onload = function() {
         if(circle_length_pow > person_length_pow){  // person is in circle
           if(inBooth(person_x[i], person_y[i], -1) < 0){             // Person is out of booth
             person_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
-            setNextBooth(i);
+            if(genre_switch_circle_type[c] == 0){
+              setNextBooth(i);
+            }else{	/* 1: ripple by laser */
+              person_next_booth[i] = exhibitor_booth;	// appealed in case of my circle
+            }
           }
         }
       }
@@ -635,7 +641,7 @@ window.onload = function() {
     genre_switch_circle_counter--;
     if(genre_switch_circle_counter <= 0){
       var boothToSetCircle = Math.floor(Math.random() * NUM_OF_BOOTH);
-      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5);
+      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5, 0/* by booth */);
       booth_life[boothToSetCircle]-=10;
       if(booth_life[boothToSetCircle]<0) booth_life[boothToSetCircle] = 0;
       genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);  // set new counter
