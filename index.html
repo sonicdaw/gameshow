@@ -30,6 +30,7 @@ window.onload = function() {
   var counter = 0;
   const NUM_OF_BOOTH = 50;
   const NUM_OF_CIRCLE = 100;
+  const NUM_OF_LASER = 100;
 
   var canvas = document.getElementById('cvs');
   if (!canvas.getContext) {
@@ -87,6 +88,12 @@ window.onload = function() {
   var genre_switch_circle_genre = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_ripples = false;
   var genre_switch_circle_velocity = new Array(NUM_OF_CIRCLE);
+
+  var genre_laser_from_x = new Array(NUM_OF_LASER);
+  var genre_laser_from_y = new Array(NUM_OF_LASER);
+  var genre_laser_to_x = new Array(NUM_OF_LASER);
+  var genre_laser_to_y = new Array(NUM_OF_LASER);
+  var genre_laser_to_width = new Array(NUM_OF_LASER);	// 0 to 100
 
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
@@ -224,6 +231,14 @@ window.onload = function() {
       person_next_booth[i] = -1;
     }
 
+    for(var i = 0; i < NUM_OF_LASER; i++){
+      genre_laser_from_x[i] = 0;
+      genre_laser_from_y[i] = 0;
+      genre_laser_to_x[i] = 0;
+      genre_laser_to_y[i] = 0;
+      genre_laser_to_width[i] = 0;
+    }
+
     exhibitor_booth = Math.floor(Math.random() * NUM_OF_BOOTH);
     exhibitor_x = booth_x[exhibitor_booth];
     exhibitor_y = booth_y[exhibitor_booth];
@@ -338,6 +353,19 @@ window.onload = function() {
     return BoothOverlap;
   }
 
+  function setLaser(x, y){
+    for(var i = 0; i < NUM_OF_LASER; i++){
+      if(genre_laser_to_width[i] == 0){
+        genre_laser_from_x[i] = booth_x[exhibitor_booth];
+        genre_laser_from_y[i] = booth_y[exhibitor_booth];
+        genre_laser_to_x[i] = x;
+        genre_laser_to_y[i] = y;
+        genre_laser_to_width[i] = 1;
+        break;
+      }
+    }
+  }
+
   function setGenreAppeal(x, y, genere, radius_max_pow){
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
       if(genre_switch_circle_radius_max[i] == 0){
@@ -354,7 +382,8 @@ window.onload = function() {
 
   function setExhibitor_GenreAppeal(){
     if(booth_life[exhibitor_booth]>10){
-      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow);
+//      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow);
+      setLaser(exhibitor_x, exhibitor_y);
       booth_life[exhibitor_booth]-=10;
       if(booth_life[exhibitor_booth]<0) booth_life[exhibitor_booth] = 0;
     }
@@ -372,7 +401,7 @@ window.onload = function() {
   }
 
   function update_exhibitor_circle_radius_max_pow(){
-    exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 2 + 30;
+    exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 2 + 40;
   }
 
   function setNextBooth(people_index){
@@ -441,10 +470,14 @@ window.onload = function() {
     ctx.strokeStyle = 'black';
     ctx.beginPath();
     ctx.arc(exhibitor_x, exhibitor_y, 10, 0, Math.PI*2, true);
+    ctx.stroke();
 
+    ctx.beginPath();
+    ctx.globalAlpha = 0.1;
     ctx.moveTo(exhibitor_x, exhibitor_y);    // Draw Exhibitor - booth line
     ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
     ctx.stroke();
+    ctx.globalAlpha = 1;
 
     // Draw Exhibitor guide circle
     ctx.beginPath();
@@ -548,6 +581,25 @@ window.onload = function() {
           person_playing[i] = 0;
           setNextBooth(i);
         }
+      }
+    }
+
+    // draw appeal lazer
+    for(var i = 0; i < NUM_OF_LASER; i++){
+      if(genre_laser_to_width[i] != 0){
+        ctx.strokeStyle = GameCateogryColor[booth_gamecategory[exhibitor_booth]];
+        ctx.beginPath();
+        var line_to_x = (genre_laser_to_x[i] - genre_laser_from_x[i]) * genre_laser_to_width[i] / 100 + genre_laser_from_x[i];
+        var line_to_y = (genre_laser_to_y[i] - genre_laser_from_y[i]) * genre_laser_to_width[i] / 100 + genre_laser_from_y[i];
+        ctx.moveTo(genre_laser_from_x[i], genre_laser_from_y[i]);
+        ctx.lineTo(line_to_x, line_to_y);
+        ctx.stroke();
+        genre_laser_to_width[i]++;
+        if(genre_laser_to_width[i]>100){
+          setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow);
+          genre_laser_to_width[i] = 0;		// reset
+        }
+        break;
       }
     }
 
