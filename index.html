@@ -619,8 +619,15 @@ window.onload = function() {
         exhibitor_x_click_pre = exhibitor_x_click;
         exhibitor_y_click_pre = exhibitor_y_click;
       }
-      exhibitor_x = exhibitor_x + (exhibitor_x_click - exhibitor_x_click_pre) * exhibitor_circle_radius_max_pow / 300;
-      exhibitor_y = exhibitor_y + (exhibitor_y_click - exhibitor_y_click_pre) * exhibitor_circle_radius_max_pow / 300;
+      var move_delay = 1;
+      var exhibitor_inBooth = inBooth(exhibitor_x, exhibitor_y, -1);
+
+      if(exhibitor_inBooth != -1 && exhibitor_inBooth !=  exhibitor_booth){
+        move_delay = 4;
+      }
+
+      exhibitor_x = exhibitor_x + (exhibitor_x_click - exhibitor_x_click_pre) * exhibitor_circle_radius_max_pow / 300 / move_delay;
+      exhibitor_y = exhibitor_y + (exhibitor_y_click - exhibitor_y_click_pre) * exhibitor_circle_radius_max_pow / 300 / move_delay;
 
       exhibitor_x_click_pre = exhibitor_x_click;
       exhibitor_y_click_pre = exhibitor_y_click;
