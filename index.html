@@ -80,6 +80,8 @@ window.onload = function() {
   var exhibitor_booth = -1;
   var exhibitor_move = false;
   var exhibitor_circle_radius_max_pow = -1;
+  var exhibitor_x_click_pre = -1;
+  var exhibitor_y_click_pre = -1;
 
   var genre_switch_circle_x = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_y = new Array(NUM_OF_CIRCLE);
@@ -155,6 +157,9 @@ window.onload = function() {
   canvas.onmouseup=function(e){
     adjustLocation(e);
     exhibitor_move = false;
+    exhibitor_x_click_pre = -1;
+    exhibitor_y_click_pre = -1;
+
     setExhibitor_laser();
     return false;
   }
@@ -182,6 +187,9 @@ window.onload = function() {
     adjustLocation(e);
     event.preventDefault();
     exhibitor_move = false;
+    exhibitor_x_click_pre = -1;
+    exhibitor_y_click_pre = -1;
+
     setExhibitor_laser();
     return false;
   }
@@ -607,14 +615,15 @@ window.onload = function() {
 
     // move Exhibitor
     if(exhibitor_move==true){
-      var move_length_pow = Math.pow(exhibitor_x - exhibitor_x_click, 2) + Math.pow(exhibitor_y - exhibitor_y_click, 2);
-      var move_length = Math.sqrt(move_length_pow);
-      exhibitor_x = exhibitor_x - (exhibitor_x - exhibitor_x_click) / move_length;
-      exhibitor_y = exhibitor_y - (exhibitor_y - exhibitor_y_click) / move_length;
+      if(exhibitor_x_click_pre == -1){
+        exhibitor_x_click_pre = exhibitor_x_click;
+        exhibitor_y_click_pre = exhibitor_y_click;
+      }
+      exhibitor_x = exhibitor_x + (exhibitor_x_click - exhibitor_x_click_pre) * exhibitor_circle_radius_max_pow / 300;
+      exhibitor_y = exhibitor_y + (exhibitor_y_click - exhibitor_y_click_pre) * exhibitor_circle_radius_max_pow / 300;
 
-//      var move_length_pow = Math.pow(exhibitor_x - booth_x[exhibitor_booth], 2) + Math.pow(exhibitor_y - booth_y[exhibitor_booth], 2);
-//      var move_length = Math.sqrt(move_length_pow);
-//      exhibitor_circle_radius_max_pow = move_length;
+      exhibitor_x_click_pre = exhibitor_x_click;
+      exhibitor_y_click_pre = exhibitor_y_click;
     }
 
     // genre switch circle
