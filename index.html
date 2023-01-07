@@ -111,6 +111,8 @@ window.onload = function() {
   var touchHoldElevator = -1;
   var timer;
   var mouse_click = false;
+  var moment_x = 0;
+  var moment_y = 0;
 
   var interval = 10;
 
@@ -150,8 +152,21 @@ window.onload = function() {
   }
 
   canvas.onmousemove=function(e){
+    if(!e) e = window.event;
+    moment_x = MouseEventGetMomentX(e);
+    moment_y = MouseEventGetMomentY(e);
+    move_exhibitor();
+
     adjustLocation(e);
     return false;
+  }
+
+  function MouseEventGetMomentX (mouse_event){
+    return (mouse_event.movementX || mouse_event.webkitMovementX || mouse_event.mozMovementX || 0);
+  }
+
+  function MouseEventGetMomentY (mouse_event){
+    return (mouse_event.movementY || mouse_event.webkitMovementY || mouse_event.mozMovementY || 0);
   }
 
   canvas.onmouseup=function(e){
@@ -161,6 +176,26 @@ window.onload = function() {
     exhibitor_y_click_pre = -1;
 
     setExhibitor_laser();
+    return false;
+  }
+
+  // for track ball support
+  canvas.onclick=function(e){
+    ElementRequestPointerLock();
+  }
+
+  function ElementRequestPointerLock(){
+    var list = [
+      "requestPointerLock",
+      "webkitRequestPointerLock",
+      "mozRequestPointerLock"
+    ];
+    for(var i=0;i < list.length;i++){
+      if(canvas[list[i]]){
+        canvas[list[i]]();
+        return true;
+      }
+    }
     return false;
   }
 
@@ -430,6 +465,30 @@ window.onload = function() {
     }
   }
 
+  function move_exhibitor(){
+    var move_delay = 1;
+    var exhibitor_inBooth = inBooth(exhibitor_x, exhibitor_y, -1);
+
+    if(exhibitor_inBooth != -1 && exhibitor_inBooth !=  exhibitor_booth){
+      move_delay = 4;
+    }
+
+    for(var i = 0; i < NUM_OF_PEOPLE; i++){
+      if(Math.pow(person_x[i] - exhibitor_x, 2) + Math.pow(person_y[i] - exhibitor_y, 2) < 100){
+        move_delay = move_delay * 5;
+        break;
+      }
+    }
+    exhibitor_x = exhibitor_x + moment_x * exhibitor_circle_radius_max_pow / 1000 / move_delay;
+    exhibitor_y = exhibitor_y + moment_y * exhibitor_circle_radius_max_pow / 1000 / move_delay;
+
+    if(exhibitor_x > WIDTH) exhibitor_x = WIDTH;
+    if(exhibitor_x < 0) exhibitor_x = 0;
+    if(exhibitor_y < 0) exhibitor_y = 0;
+    if(exhibitor_y > HEIGHT) exhibitor_y = HEIGHT;
+  }
+
+
   // DRAW
   function draw(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -614,31 +673,7 @@ window.onload = function() {
     }
 
     // move Exhibitor
-    if(exhibitor_move==true){
-      if(exhibitor_x_click_pre == -1){
-        exhibitor_x_click_pre = exhibitor_x_click;
-        exhibitor_y_click_pre = exhibitor_y_click;
-      }
-      var move_delay = 1;
-      var exhibitor_inBooth = inBooth(exhibitor_x, exhibitor_y, -1);
-
-      if(exhibitor_inBooth != -1 && exhibitor_inBooth !=  exhibitor_booth){
-        move_delay = 4;
-      }
-
-      for(var i = 0; i < NUM_OF_PEOPLE; i++){
-        if(Math.pow(person_x[i] - exhibitor_x, 2) + Math.pow(person_y[i] - exhibitor_y, 2) < 100){
-          move_delay = move_delay * 5;
-          break;
-        }
-      }
-
-      exhibitor_x = exhibitor_x + (exhibitor_x_click - exhibitor_x_click_pre) * exhibitor_circle_radius_max_pow / 300 / move_delay;
-      exhibitor_y = exhibitor_y + (exhibitor_y_click - exhibitor_y_click_pre) * exhibitor_circle_radius_max_pow / 300 / move_delay;
-
-      exhibitor_x_click_pre = exhibitor_x_click;
-      exhibitor_y_click_pre = exhibitor_y_click;
-    }
+    // refer to move_exhibitor() function. Now not support for touch operation
 
     // genre switch circle
 
