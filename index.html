@@ -82,6 +82,7 @@ window.onload = function() {
   var exhibitor_circle_radius_max_pow = -1;
   var exhibitor_x_click_pre = -1;
   var exhibitor_y_click_pre = -1;
+  var exhibitor_genre_ripple_counter = 0;
 
   var genre_switch_circle_x = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_y = new Array(NUM_OF_CIRCLE);
@@ -175,13 +176,13 @@ window.onload = function() {
     exhibitor_x_click_pre = -1;
     exhibitor_y_click_pre = -1;
 
-    setExhibitor_laser();
     return false;
   }
 
   // for track ball support
   canvas.onclick=function(e){
     ElementRequestPointerLock();
+    setExhibitor_laser();
   }
 
   function ElementRequestPointerLock(){
@@ -225,7 +226,6 @@ window.onload = function() {
     exhibitor_x_click_pre = -1;
     exhibitor_y_click_pre = -1;
 
-    setExhibitor_laser();
     return false;
   }
 
@@ -446,7 +446,7 @@ window.onload = function() {
   }
 
   function update_exhibitor_circle_radius_max_pow(){
-    exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 2 + 40;
+    exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 1.5 + 60;
   }
 
   function setNextBooth(people_index){
@@ -559,12 +559,12 @@ window.onload = function() {
       if(genre_switch_circle_radius_max[i] > 0){
         ctx.beginPath();
         ctx.strokeStyle = GameCateogryColor[genre_switch_circle_genre[i]];
-        if (genre_switch_circle_type[i]==0){  // 0: genre ripple by booth, 1: booth ripple by laser
-          ctx.lineWidth = 1.0;
-        }else{
-          ctx.lineWidth = 20.0;
-        }
         ctx.arc(genre_switch_circle_x[i], genre_switch_circle_y[i], genre_switch_circle_radius[i], 0, Math.PI*2, true);
+        if (genre_switch_circle_type[i]==0){  // 0: genre ripple by booth, 1: booth ripple by laser
+        }else{
+          ctx.fillStyle = GameCateogryColor[genre_switch_circle_genre[i]];
+          ctx.fill();
+        }
         ctx.stroke();
         ctx.lineWidth = 1.0;
         genre_switch_circle_radius[i]+= genre_switch_circle_velocity[i];
@@ -789,6 +789,11 @@ window.onload = function() {
         booth_life[i]++;
         if(booth_life[i] > 100)booth_life[i]=100;
       }
+    }
+    exhibitor_genre_ripple_counter++;
+    if(exhibitor_genre_ripple_counter > 500){
+      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0);
+      exhibitor_genre_ripple_counter=0;
     }
     if(time_minute > time_minute_max - 1){
       time_hour++;
