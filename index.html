@@ -559,8 +559,14 @@ window.onload = function() {
       if(genre_switch_circle_radius_max[i] > 0){
         ctx.beginPath();
         ctx.strokeStyle = GameCateogryColor[genre_switch_circle_genre[i]];
+        if (genre_switch_circle_type[i]==0){  // 0: genre ripple by booth, 1: booth ripple by laser
+          ctx.lineWidth = 1.0;
+        }else{
+          ctx.lineWidth = 20.0;
+        }
         ctx.arc(genre_switch_circle_x[i], genre_switch_circle_y[i], genre_switch_circle_radius[i], 0, Math.PI*2, true);
         ctx.stroke();
+        ctx.lineWidth = 1.0;
         genre_switch_circle_radius[i]+= genre_switch_circle_velocity[i];
         if(genre_switch_circle_velocity[i] > 0.7)
           genre_switch_circle_velocity[i] -= 0.05;
