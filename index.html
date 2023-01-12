@@ -549,14 +549,28 @@ window.onload = function() {
     }
 
     // Draw Exhibitor
+    var size = 3;
+    var person_offset = -5;
     ctx.strokeStyle = 'black';
     ctx.beginPath();
-    ctx.arc(exhibitor_x, exhibitor_y, 10, 0, Math.PI*2, true);
+    ctx.arc(exhibitor_x, exhibitor_y + person_offset * size, 3 * size, 0, Math.PI*2, true);
+    ctx.moveTo(exhibitor_x - 5 * size, exhibitor_y + (6 + person_offset) * size);
+    ctx.lineTo(exhibitor_x + 5 * size, exhibitor_y + (6 + person_offset) * size);
+
+    ctx.moveTo(exhibitor_x, exhibitor_y + (3 + person_offset) * size);
+    ctx.lineTo(exhibitor_x, exhibitor_y + (8 + person_offset) * size);
+
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * size);
+    ctx.lineTo(exhibitor_x - 4 * size, exhibitor_y + (11 + person_offset) * size);
+
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * size);
+    ctx.lineTo(exhibitor_x + 4 * size, exhibitor_y + (11 + person_offset) * size);
     ctx.stroke();
 
+    // Draw Exhibitor - booth line
     ctx.beginPath();
     ctx.globalAlpha = 0.1;
-    ctx.moveTo(exhibitor_x, exhibitor_y);    // Draw Exhibitor - booth line
+    ctx.moveTo(exhibitor_x, exhibitor_y);
     ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
     ctx.stroke();
     ctx.globalAlpha = 1;
