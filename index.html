@@ -634,6 +634,7 @@ window.onload = function() {
     }
 
     // Draw Trend Ranking
+    var trend_rank_text_y = 0;
     ctx.beginPath();
     ctx.textAlign = "left";
     ctx.font = "10pt 'Times New Roman'";
@@ -641,12 +642,21 @@ window.onload = function() {
     for(var i = 0; i < NUM_OF_BOOTH; i++){
       if(trend_ranking[i][0]==exhibitor_booth){
         ctx.fillStyle = "red";
+        trend_rank_text_y = TOP_OFFSET + 35 + i * 15;
       }else{
         ctx.fillStyle = "black";
       }
       ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], 0, TOP_OFFSET + 35 + i * 15);
     }
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.strokeStyle = 'black';	    // Draw rank - booth line
+    ctx.globalAlpha = 0.1;
+    ctx.moveTo(0, trend_rank_text_y);
+    ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
 
     // Draw World Arake
     if(world_awake > 0){
