@@ -796,7 +796,7 @@ window.onload = function() {
            if(person_is_press[i]){
              booth_trend_score[next_booth] += 10;  // Booth Trend Point Up for press
              booth_news_count[next_booth]++;
-             if(booth_news_count[next_booth] == 3 && next_booth == exhibitor_booth && world_awake == 0){      // World_Awake
+             if(booth_news_count[next_booth] == 5 && next_booth == exhibitor_booth && world_awake == 0){      // World_Awake
                world_awake = 2000;
                booth_news_count[next_booth] = 0;
                for( var i = 0; i < NUM_OF_PEOPLE; i++){
@@ -853,7 +853,7 @@ window.onload = function() {
           person_y[i] =  FIELD_HEIGHT / 2;
           person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
           setNextBooth(i);
-          if(Math.random() < 0.05){
+          if(Math.random() < 0.03){
             person_is_press[i] = true;
           }
           break;
