@@ -11,7 +11,8 @@ window.onload = function() {
 
   var WIDTH, HEIGHT;
   var FIELD_WIDTH, FIELD_HEIGHT;
-  const LEFT_OFFSET = 10;
+  const LEFT_OFFSET = 40;
+  const RIGHT_OFFSET = 10;
   const TOP_OFFSET = 10;
   const NUM_OF_PEOPLE = 1000;
   const DEFAULT_FONT = "bold 8pt 'Times New Roman'";
@@ -136,7 +137,7 @@ window.onload = function() {
 
     WIDTH = w;
     HEIGHT = h;
-    FIELD_WIDTH = WIDTH;
+    FIELD_WIDTH = WIDTH - LEFT_OFFSET - RIGHT_OFFSET;
     FIELD_HEIGHT = HEIGHT - TOP_OFFSET * 2;
   }
 
@@ -345,8 +346,8 @@ window.onload = function() {
   }
 
   function setBooth(i){
-    booth_x[i] = Math.floor(Math.random() * FIELD_WIDTH);
-    booth_y[i] = Math.floor(Math.random() * FIELD_HEIGHT);
+    booth_x[i] = Math.floor(Math.random() * (FIELD_WIDTH - LEFT_OFFSET - RIGHT_OFFSET) + LEFT_OFFSET);
+    booth_y[i] = Math.floor(Math.random() * (FIELD_HEIGHT - TOP_OFFSET) + TOP_OFFSET);
     booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
     booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
     booth_trend_score[i] = 0;
@@ -482,10 +483,10 @@ window.onload = function() {
     exhibitor_x = exhibitor_x + moment_x * exhibitor_circle_radius_max_pow / 1000 / move_delay;
     exhibitor_y = exhibitor_y + moment_y * exhibitor_circle_radius_max_pow / 1000 / move_delay;
 
-    if(exhibitor_x > WIDTH) exhibitor_x = WIDTH;
-    if(exhibitor_x < 0) exhibitor_x = 0;
-    if(exhibitor_y < 0) exhibitor_y = 0;
-    if(exhibitor_y > HEIGHT) exhibitor_y = HEIGHT;
+    if(exhibitor_x > WIDTH - RIGHT_OFFSET) exhibitor_x = WIDTH - RIGHT_OFFSET;
+    if(exhibitor_x < LEFT_OFFSET) exhibitor_x = LEFT_OFFSET;
+    if(exhibitor_y < TOP_OFFSET) exhibitor_y = TOP_OFFSET;
+    if(exhibitor_y > HEIGHT - TOP_OFFSET) exhibitor_y = HEIGHT - TOP_OFFSET;
   }
 
 
@@ -495,6 +496,12 @@ window.onload = function() {
     ctx.textAlign = "center";
     ctx.font = DEFAULT_FONT;
     ctx.lineWidth = 1;
+
+    // Draw Field
+    ctx.beginPath();
+    ctx.strokeStyle = 'black';
+    ctx.rect(LEFT_OFFSET, TOP_OFFSET, FIELD_WIDTH, FIELD_HEIGHT);
+    ctx.stroke();
 
     // Draw booth
     for(var i = 0; i < NUM_OF_BOOTH; i++){
@@ -630,14 +637,14 @@ window.onload = function() {
     ctx.beginPath();
     ctx.textAlign = "left";
     ctx.font = "10pt 'Times New Roman'";
-    ctx.fillText("Trend", LEFT_OFFSET, TOP_OFFSET + 20);
+    ctx.fillText("Trend", 0, TOP_OFFSET + 20);
     for(var i = 0; i < NUM_OF_BOOTH; i++){
       if(trend_ranking[i][0]==exhibitor_booth){
         ctx.fillStyle = "red";
       }else{
         ctx.fillStyle = "black";
       }
-      ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], LEFT_OFFSET, TOP_OFFSET + 35 + i * 15);
+      ctx.fillText(trend_ranking[i][0] + ": " + trend_ranking[i][1], 0, TOP_OFFSET + 35 + i * 15);
     }
     ctx.stroke();
 
