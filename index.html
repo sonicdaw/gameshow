@@ -16,6 +16,9 @@ window.onload = function() {
   const TOP_OFFSET = 10;
   const NUM_OF_PEOPLE = 1000;
   const DEFAULT_FONT = "bold 8pt 'Times New Roman'";
+  const GRID_DIVIDE = 20;
+  var grid_unit_width = 0;
+  var grid_unit_height = 0;
 
   var score = 0;
   var score_on_screen = 0;
@@ -139,6 +142,9 @@ window.onload = function() {
     HEIGHT = h;
     FIELD_WIDTH = WIDTH - LEFT_OFFSET - RIGHT_OFFSET;
     FIELD_HEIGHT = HEIGHT - TOP_OFFSET * 2;
+
+    grid_unit_width = FIELD_WIDTH / GRID_DIVIDE;
+    grid_unit_height = FIELD_HEIGHT / GRID_DIVIDE;
   }
 
   // ----------------------------------------------------------------
@@ -346,8 +352,8 @@ window.onload = function() {
   }
 
   function setBooth(i){
-    booth_x[i] = Math.floor(Math.random() * (FIELD_WIDTH - LEFT_OFFSET - RIGHT_OFFSET) + LEFT_OFFSET);
-    booth_y[i] = Math.floor(Math.random() * (FIELD_HEIGHT - TOP_OFFSET) + TOP_OFFSET);
+    booth_x[i] = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_width + LEFT_OFFSET + grid_unit_width / 2;
+    booth_y[i] = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_height + TOP_OFFSET + grid_unit_height / 2;
     booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
     booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
     booth_trend_score[i] = 0;
