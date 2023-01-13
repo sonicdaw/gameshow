@@ -87,6 +87,7 @@ window.onload = function() {
   var exhibitor_x_click_pre = -1;
   var exhibitor_y_click_pre = -1;
   var exhibitor_genre_ripple_counter = 0;
+  var Exhibitor_size;
 
   var genre_switch_circle_x = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_y = new Array(NUM_OF_CIRCLE);
@@ -307,6 +308,7 @@ window.onload = function() {
     }
 
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
+    Exhibitor_size = 200;
   }
 
   function adjustLocation(e){
@@ -549,22 +551,22 @@ window.onload = function() {
     }
 
     // Draw Exhibitor
-    var size = 3;
+    if(Exhibitor_size > 1){Exhibitor_size--;}else{Exhibitor_size = 1}
     var person_offset = -5;
     ctx.strokeStyle = 'black';
     ctx.beginPath();
-    ctx.arc(exhibitor_x, exhibitor_y + person_offset * size, 3 * size, 0, Math.PI*2, true);
-    ctx.moveTo(exhibitor_x - 5 * size, exhibitor_y + (6 + person_offset) * size);
-    ctx.lineTo(exhibitor_x + 5 * size, exhibitor_y + (6 + person_offset) * size);
+    ctx.arc(exhibitor_x, exhibitor_y + person_offset * Exhibitor_size, 3 * Exhibitor_size, 0, Math.PI*2, true);
+    ctx.moveTo(exhibitor_x - 5 * Exhibitor_size, exhibitor_y + (6 + person_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x + 5 * Exhibitor_size, exhibitor_y + (6 + person_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x, exhibitor_y + (3 + person_offset) * size);
-    ctx.lineTo(exhibitor_x, exhibitor_y + (8 + person_offset) * size);
+    ctx.moveTo(exhibitor_x, exhibitor_y + (3 + person_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x, exhibitor_y + (8 + person_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * size);
-    ctx.lineTo(exhibitor_x - 4 * size, exhibitor_y + (11 + person_offset) * size);
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x - 4 * Exhibitor_size, exhibitor_y + (11 + person_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * size);
-    ctx.lineTo(exhibitor_x + 4 * size, exhibitor_y + (11 + person_offset) * size);
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x + 4 * Exhibitor_size, exhibitor_y + (11 + person_offset) * Exhibitor_size);
     ctx.stroke();
 
     // Draw Exhibitor - booth line
