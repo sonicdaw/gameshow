@@ -46,6 +46,12 @@ window.onload = function() {
   fitCanvasSize();
   window.onresize = fitCanvasSize;
 
+  var Mode = {
+    tutorial : 1,
+    game : 2,
+    gameover : 3
+  };
+
   var GameCateogry = {
     shooting : 0,
     action : 1,
@@ -109,6 +115,7 @@ window.onload = function() {
 
   var trend_ranking = [];
   var world_awake = 0;
+  var game_mode = Mode.tutorial;
 
   var mouseX, mouseY;
   var touchX = 0;
@@ -131,7 +138,9 @@ window.onload = function() {
   var touchVisualizerY = -1;
   var touchVisualizerCounter = 0;
 
-  init_game();
+  var tutorial_visitor_counter = 0;
+  const tutorial_num_of_genre = 3;
+  init_tutorial();
 
   function fitCanvasSize() {
     var w = document.documentElement.clientWidth;
@@ -153,6 +162,7 @@ window.onload = function() {
 
   // mouse
   canvas.onmousedown=function(e){
+   if(game_mode == Mode.game){
     adjustLocation(e);
     exhibitor_move = true;
 //    genre_switch_circle_radius = 0;
@@ -168,6 +178,7 @@ window.onload = function() {
 
     adjustLocation(e);
     return false;
+   }
   }
 
   function MouseEventGetMomentX (mouse_event){
@@ -179,18 +190,28 @@ window.onload = function() {
   }
 
   canvas.onmouseup=function(e){
+   if(game_mode == Mode.game){
     adjustLocation(e);
     exhibitor_move = false;
     exhibitor_x_click_pre = -1;
     exhibitor_y_click_pre = -1;
 
     return false;
+   }
   }
 
   // for track ball support
   canvas.onclick=function(e){
     ElementRequestPointerLock();
-    setExhibitor_laser();
+    if(game_mode == Mode.tutorial){
+      game_mode = Mode.game;
+      init_game();
+    }else if(game_mode == Mode.game){
+      setExhibitor_laser();
+    }else if(game_mode == Mode.gameover){
+      game_mode = Mode.tutorial;
+      init_tutorial();
+    }
   }
 
   function ElementRequestPointerLock(){
@@ -210,6 +231,7 @@ window.onload = function() {
 
   // touch
   canvas.ontouchstart=function(){
+   if(game_mode == Mode.game){
     e=event.touches[0];    // first touch only
     adjustLocation(e);
     event.preventDefault();
@@ -217,16 +239,20 @@ window.onload = function() {
 //    genre_switch_circle_radius = 0;
 //    genre_switch_circle_ripples = false;
     return false;
+   }
   }
 
   canvas.ontouchmove=function(e){
+   if(game_mode == Mode.game){
     e=event.touches[0];    // first touch only
     adjustLocation(e);
     event.preventDefault();
     return false;
+   }
   }
 
   canvas.ontouchend=function(e){
+   if(game_mode == Mode.game){
     e=event.changedTouches[0];    // first touch only
     adjustLocation(e);
     event.preventDefault();
@@ -235,6 +261,7 @@ window.onload = function() {
     exhibitor_y_click_pre = -1;
 
     return false;
+   }
   }
 
   function init_game(){
@@ -251,7 +278,7 @@ window.onload = function() {
 
     // create booth
     for(var i = 0; i < NUM_OF_BOOTH; i++){
-      setBooth(i);
+      setRandomBooth(i);
     }
 
     // Recreate overlapped booth
@@ -260,7 +287,7 @@ window.onload = function() {
       for(var i = 0; i < NUM_OF_BOOTH; i++){
         var overlappedBoothNumber = boothInBooth(i);
         while(overlappedBoothNumber > 0 && overlappedBoothNumber != i){
-          setBooth(i);
+          setRandomBooth(i);
           overlappedBoothNumber = boothInBooth(booth_x[i], booth_y[i], booth_size[i]);
         }
       }
@@ -269,6 +296,30 @@ window.onload = function() {
     update_trend_ranking();
     initForNextDay();
   }
+
+  function init_tutorial(){
+    game_over = false;
+    game_over_touchlock = 0;
+    counter = 0;
+
+    // create booth
+    var category_len = tutorial_num_of_genre;
+    var booth_size = 100;
+    var booth_counter = 0;
+    for(var i = 0; i < category_len; i++){
+      for(var j = 0; j < 4; j++){
+        var x = j * FIELD_WIDTH / 4 + LEFT_OFFSET + FIELD_WIDTH / 4 / 2;
+        var y = i * FIELD_HEIGHT / category_len + TOP_OFFSET + FIELD_HEIGHT / category_len / 2;
+        var size = booth_size;
+        var category = i;
+        setBooth(booth_counter, x, y, size, category);
+        booth_counter++;
+      }
+    }
+    update_trend_ranking();
+    initForNextDay();
+  }
+
 
   function initForNextDay(){
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
@@ -353,11 +404,19 @@ window.onload = function() {
     return result;
   }
 
-  function setBooth(i){
-    booth_x[i] = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_width + LEFT_OFFSET + grid_unit_width / 2;
-    booth_y[i] = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_height + TOP_OFFSET + grid_unit_height / 2;
-    booth_size[i] = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
-    booth_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+  function setRandomBooth(i){
+    var x = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_width + LEFT_OFFSET + grid_unit_width / 2;
+    var y = Math.floor(Math.random() * GRID_DIVIDE) * grid_unit_height + TOP_OFFSET + grid_unit_height / 2;
+    var size = Math.floor(Math.random() * BOOTH_SIZE_MAX) + 5;
+    var category = Math.floor(Math.random() * GameCateogry.simulation);
+    setBooth(i, x, y, size, category);
+  }
+
+  function setBooth(i, x, y, size, category){
+    booth_x[i] = x;
+    booth_y[i] = y;
+    booth_size[i] = size;
+    booth_gamecategory[i] = category;
     booth_trend_score[i] = 0;
     booth_news_count[i] = 0;
     booth_life[i] = 100;
@@ -518,7 +577,11 @@ window.onload = function() {
       ctx.rect(booth_x[i]- booth_size[i] / 2, booth_y[i]- booth_size[i] / 2,
       booth_size[i],                         booth_size[i]);
       ctx.textAlign = "left";
-      ctx.font = "8pt 'Times New Roman'";
+      if(game_mode == Mode.tutorial){
+        ctx.font = "20pt 'Times New Roman'";
+      }else if(game_mode == Mode.game){
+        ctx.font = "8pt 'Times New Roman'";
+      }
       ctx.fillText(i + ": " + GameCateogryText[booth_gamecategory[i]], booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
       ctx.textAlign = "right";
       ctx.fillText("Trend: " + booth_trend_score[i], booth_x[i] + booth_size[i] / 2, booth_y[i] + booth_size[i] / 2);
@@ -545,6 +608,14 @@ window.onload = function() {
         ctx.textAlign = "Center";
         ctx.font = "8pt 'Times New Roman'";
         ctx.fillText("PRESS", person_x[i], person_y[i]);
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      if(game_mode == Mode.tutorial){
+        ctx.strokeStyle = 'black';
+        ctx.textAlign = "Center";
+        ctx.font = "20pt 'Times New Roman'";
+        ctx.fillText(GameCateogryText[person_gamecategory[i]] + " Game Fan", person_x[i], person_y[i] - 10);
       }
       ctx.stroke();
      }
@@ -818,6 +889,17 @@ window.onload = function() {
      }
    }
 
+    // draw tutoril title
+    if(game_mode == Mode.tutorial){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "Green";
+      ctx.fillText("異世界東京ゲームショウ", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 3);
+      ctx.fillText("Another Tokyo Game Show", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT *2 / 3);
+      ctx.stroke();
+    }
+
     // Time count
     time_sec++;
     if(time_sec > time_sec_max - 1){
@@ -853,7 +935,13 @@ window.onload = function() {
           person_in_field[i] = true;
           person_x[i] =  FIELD_WIDTH;
           person_y[i] =  FIELD_HEIGHT / 2;
-          person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+          if(game_mode == Mode.game){
+            person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+          }else{	// tutorial
+            person_gamecategory[i] = tutorial_visitor_counter;
+            tutorial_visitor_counter++;
+            if(tutorial_visitor_counter > tutorial_num_of_genre - 1) tutorial_visitor_counter = 0;
+          }
           setNextBooth(i);
           if(Math.random() < 0.03){
             person_is_press[i] = true;
@@ -863,7 +951,11 @@ window.onload = function() {
       }
     }
     counter++;
-    if(counter > countMaxForNextPersonIn()) counter = 0;
+    if(game_mode == Mode.tutorial){
+      if(counter > 1000) counter = 0;
+    }else if(game_mode == Mode.game){
+      if(counter > countMaxForNextPersonIn()) counter = 0;
+    }
   }
 
   var move = function() {
