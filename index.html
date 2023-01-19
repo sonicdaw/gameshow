@@ -72,6 +72,7 @@ window.onload = function() {
   var booth_trend_score = new Array(NUM_OF_BOOTH);
   var booth_news_count = new Array(NUM_OF_BOOTH);
   var booth_life = new Array(NUM_OF_BOOTH);
+  var number_of_active_booth = 0;
   const BOOTH_SIZE_MAX = 100;
 
   var person_in_field = new Array(NUM_OF_PEOPLE);
@@ -289,6 +290,7 @@ window.onload = function() {
       }
       stageCreateTimeout++;
     }
+    number_of_active_booth = NUM_OF_BOOTH;
     update_trend_ranking();
     initForNextDay();
   }
@@ -312,6 +314,7 @@ window.onload = function() {
         booth_counter++;
       }
     }
+    number_of_active_booth = booth_counter;
     update_trend_ranking();
     initForNextDay();
   }
@@ -740,7 +743,7 @@ window.onload = function() {
     ctx.textAlign = "left";
     ctx.font = "10pt 'Times New Roman'";
     ctx.fillText("Trend", 0, TOP_OFFSET + 20);
-    for(var i = 0; i < NUM_OF_BOOTH; i++){
+    for(var i = 0; i < number_of_active_booth; i++){
       if(trend_ranking[i][0]==exhibitor_booth){
         ctx.fillStyle = "red";
         trend_rank_text_y = TOP_OFFSET + 35 + i * 15;
