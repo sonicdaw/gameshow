@@ -604,7 +604,7 @@ window.onload = function() {
       ctx.beginPath();
       ctx.arc(person_x[i], person_y[i], 3 * size + Math.abs(person_playing[i]/100), 0, Math.PI*2, true);
       if(person_is_press[i]){
-        ctx.textAlign = "Center";
+        ctx.textAlign = "center";
         ctx.font = "8pt 'Times New Roman'";
         ctx.fillText("PRESS", person_x[i], person_y[i]);
       }
@@ -612,7 +612,7 @@ window.onload = function() {
       ctx.beginPath();
       if(game_mode == Mode.tutorial){
         ctx.strokeStyle = 'black';
-        ctx.textAlign = "Center";
+        ctx.textAlign = "center";
         ctx.font = "20pt 'Times New Roman'";
         ctx.fillText(GameCateogryText[person_gamecategory[i]] + " Game Fan", person_x[i], person_y[i] - 10);
       }
@@ -671,6 +671,15 @@ window.onload = function() {
           genre_switch_circle_velocity[i] -= 0.05;
         if(genre_switch_circle_radius[i] > genre_switch_circle_radius_max[i]){
           genre_switch_circle_radius_max[i] = 0;  // OFF
+        }
+        if(game_mode == Mode.tutorial){
+          ctx.beginPath();
+          ctx.strokeStyle = 'black';
+          ctx.textAlign = "center";
+          ctx.font = "40pt 'Times New Roman'";
+          ctx.fillText("Genre Appeal", genre_switch_circle_x[i], genre_switch_circle_y[i] - genre_switch_circle_radius[i]);
+          ctx.fillText("Genre Appeal", genre_switch_circle_x[i], genre_switch_circle_y[i] + genre_switch_circle_radius[i]);
+          ctx.stroke();
         }
       }
     }
