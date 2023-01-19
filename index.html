@@ -584,7 +584,11 @@ window.onload = function() {
       }else if(game_mode == Mode.game){
         ctx.font = "8pt 'Times New Roman'";
       }
-      ctx.fillText(i + ": " + GameCateogryText[booth_gamecategory[i]], booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
+      if(game_mode == Mode.tutorial){
+        ctx.fillText(i, booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
+      }else if(game_mode == Mode.game){
+        ctx.fillText(i + ": " + GameCateogryText[booth_gamecategory[i]], booth_x[i]- booth_size[i] / 2, booth_y[i] - booth_size[i] / 2);
+      }
       ctx.textAlign = "right";
       ctx.fillText("Trend: " + booth_trend_score[i], booth_x[i] + booth_size[i] / 2, booth_y[i] + booth_size[i] / 2);
       if(booth_news_count[i] > 0)
@@ -596,6 +600,15 @@ window.onload = function() {
       var booth_height = booth_size[i] * booth_life[i] / 100;
       ctx.rect(booth_x[i] + booth_size[i] / 2 + 1, booth_y[i] + booth_size[i] / 2 - booth_height, 1, booth_height);
       ctx.stroke();
+
+      if(game_mode == Mode.tutorial){
+        ctx.beginPath();
+        ctx.strokeStyle = 'black';
+        ctx.textAlign = "left";
+        ctx.font = "30pt 'Times New Roman'";
+        ctx.fillText(GameCateogryText[booth_gamecategory[i]] + " Booth", LEFT_OFFSET + FIELD_WIDTH / 4 / 2 - booth_size[i] / 2, booth_y[i] - booth_size[i] / 2 - booth_size[i] / 3);
+        ctx.stroke();
+      }
     }
 
     // Draw Persons
