@@ -823,12 +823,29 @@ window.onload = function() {
         var person_length_pow = Math.pow(genre_switch_circle_x[c] - person_x[i], 2) + Math.pow(genre_switch_circle_y[c] - person_y[i], 2);
         var circle_length_pow = Math.pow(genre_switch_circle_radius[c], 2);
         if(circle_length_pow > person_length_pow){  // person is in circle
-          if(inBooth(person_x[i], person_y[i], -1) < 0){             // Person is out of booth
+        var inBooth_num = inBooth(person_x[i], person_y[i], -1);
+          if(inBooth_num < 0){             // Person is out of booth
             person_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
             if(genre_switch_circle_type[c] == 0){
               setNextBooth(i);
             }else{	/* 1: ripple by laser */
               person_next_booth[i] = exhibitor_booth;	// appealed in case of my circle
+            }
+          }else{							// Visitor is in booth
+            if(person_gamecategory[i] != genre_switch_circle_genre[c]){ // draw barrier in case that circle and booth category are not same
+              ctx.beginPath();
+              ctx.fillStyle = 'rgba(192, 192, 192, 0.5)';
+              ctx.fillRect(booth_x[inBooth_num]- booth_size[inBooth_num] / 2, booth_y[inBooth_num]- booth_size[inBooth_num] / 2,
+                       booth_size[inBooth_num],                         booth_size[inBooth_num]);
+              ctx.stroke();
+              if(game_mode == Mode.tutorial){
+                ctx.beginPath();
+                ctx.fillStyle = 'black';
+                ctx.textAlign = "center";
+                ctx.font = "50pt 'Times New Roman'";
+                ctx.fillText("Booth Barrier", booth_x[inBooth_num], booth_y[inBooth_num]);
+                ctx.stroke();
+              }
             }
           }
         }
