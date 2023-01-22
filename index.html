@@ -228,39 +228,6 @@ window.onload = function() {
     return false;
   }
 
-  // touch
-  canvas.ontouchstart=function(){
-   if(game_mode == Mode.game){
-    e=event.touches[0];    // first touch only
-    adjustLocation(e);
-    event.preventDefault();
-    exhibitor_move = true;
-    return false;
-   }
-  }
-
-  canvas.ontouchmove=function(e){
-   if(game_mode == Mode.game){
-    e=event.touches[0];    // first touch only
-    adjustLocation(e);
-    event.preventDefault();
-    return false;
-   }
-  }
-
-  canvas.ontouchend=function(e){
-   if(game_mode == Mode.game){
-    e=event.changedTouches[0];    // first touch only
-    adjustLocation(e);
-    event.preventDefault();
-    exhibitor_move = false;
-    exhibitor_x_click_pre = -1;
-    exhibitor_y_click_pre = -1;
-
-    return false;
-   }
-  }
-
   function init_game(){
     score = 0;
     score_on_screen = 0;
