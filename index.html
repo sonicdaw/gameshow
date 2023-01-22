@@ -35,6 +35,7 @@ window.onload = function() {
   const NUM_OF_BOOTH = 50;
   const NUM_OF_CIRCLE = 100;
   const NUM_OF_LASER = 100;
+  const NUM_OF_TEXT_PLAYING = 100;
 
   var canvas = document.getElementById('cvs');
   if (!canvas.getContext) {
@@ -110,6 +111,10 @@ window.onload = function() {
   var genre_laser_to_x = new Array(NUM_OF_LASER);
   var genre_laser_to_y = new Array(NUM_OF_LASER);
   var genre_laser_to_width = new Array(NUM_OF_LASER);	// 0 to 100
+
+  var text_playing_x = new Array(NUM_OF_TEXT_PLAYING);
+  var text_playing_y = new Array(NUM_OF_TEXT_PLAYING);
+  var text_playing_count = new Array(NUM_OF_TEXT_PLAYING);
 
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
@@ -324,6 +329,12 @@ window.onload = function() {
       genre_switch_circle_type[i] = 0;
     }
 
+    for(var i = 0; i < NUM_OF_CIRCLE; i++){
+      text_playing_x[i] = 0;
+      text_playing_y[i] = 0;
+      text_playing_count[i] = 0;
+    }
+
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
     Exhibitor_size = 200;
   }
@@ -525,7 +536,16 @@ window.onload = function() {
     if(exhibitor_y > HEIGHT - TOP_OFFSET) exhibitor_y = HEIGHT - TOP_OFFSET;
   }
 
-
+  function setPlayingText(x, y){
+    for(var i =0; i < NUM_OF_TEXT_PLAYING; i++){
+      if(text_playing_count[i] == 0){
+        text_playing_x[i] = x;
+        text_playing_y[i] = y;
+        text_playing_count[i] = 50;
+        break;
+      }
+    }
+  }
   // DRAW
   function draw(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -779,6 +799,24 @@ window.onload = function() {
       }
     }
 
+    // Draw text
+    for(var i = 0; i < NUM_OF_CIRCLE; i++){
+      if(text_playing_count[i] > 0){
+        ctx.beginPath();
+        ctx.textAlign = "center";
+        ctx.font = "15pt 'Times New Roman'";
+        ctx.fillStyle = "green";
+        if(game_mode == Mode.tutorial){
+          ctx.fillText("Playing♪", text_playing_x[i], text_playing_y[i] );
+　　　　 }else{
+          ctx.fillText("♪", text_playing_x[i], text_playing_y[i] );
+        }
+        ctx.stroke();
+        text_playing_y[i]--;
+        text_playing_count[i]--;
+      }
+    }
+
     // move Exhibitor
     // refer to move_exhibitor() function. Now not support for touch operation
 
@@ -869,6 +907,7 @@ window.onload = function() {
        // Visit
        var next_booth = visitor_next_booth[i];
        if(Math.abs(booth_x[visitor_next_booth[i]] - visitor_x[i]) < 10 && Math.abs(booth_y[next_booth] - visitor_y[i]) < 10){
+         if(visitor_playing[i] % 50 == 0)  setPlayingText(visitor_x[i],visitor_y[i]);
          visitor_playing[i]++;
          if(visitor_playing[i] > 500){       // Played
            visitor_booth_visit_list[i].push(next_booth);
