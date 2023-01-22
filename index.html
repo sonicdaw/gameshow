@@ -75,14 +75,14 @@ window.onload = function() {
   var number_of_active_booth = 0;
   const BOOTH_SIZE_MAX = 100;
 
-  var person_in_field = new Array(NUM_OF_PEOPLE);
-  var person_x =  new Array(NUM_OF_PEOPLE);
-  var person_y =  new Array(NUM_OF_PEOPLE);
-  var person_gamecategory = new Array(NUM_OF_PEOPLE);
-  var person_booth_visit_list = new Array(NUM_OF_PEOPLE);
-  var person_playing = new Array(NUM_OF_PEOPLE);
-  var person_is_press = new Array(NUM_OF_PEOPLE);
-  var person_next_booth = new Array(NUM_OF_PEOPLE);
+  var visitor_in_field = new Array(NUM_OF_PEOPLE);
+  var visitor_x =  new Array(NUM_OF_PEOPLE);
+  var visitor_y =  new Array(NUM_OF_PEOPLE);
+  var visitor_gamecategory = new Array(NUM_OF_PEOPLE);
+  var visitor_booth_visit_list = new Array(NUM_OF_PEOPLE);
+  var visitor_playing = new Array(NUM_OF_PEOPLE);
+  var visitor_is_press = new Array(NUM_OF_PEOPLE);
+  var visitor_next_booth = new Array(NUM_OF_PEOPLE);
 
   var exhibitor_x = -1;
   var exhibitor_y = -1;
@@ -290,14 +290,14 @@ window.onload = function() {
   function initForNextDay(){
     for(var i = 0; i < NUM_OF_PEOPLE; i++)
     {
-      person_in_field[i] = false;
-      person_x[i] =  0;
-      person_y[i] =  0;
-      person_gamecategory[i] = 0;
-      person_booth_visit_list[i] = [];
-      person_playing[i] = 0;
-      person_is_press[i] = false;
-      person_next_booth[i] = -1;
+      visitor_in_field[i] = false;
+      visitor_x[i] =  0;
+      visitor_y[i] =  0;
+      visitor_gamecategory[i] = 0;
+      visitor_booth_visit_list[i] = [];
+      visitor_playing[i] = 0;
+      visitor_is_press[i] = false;
+      visitor_next_booth[i] = -1;
     }
 
     for(var i = 0; i < NUM_OF_LASER; i++){
@@ -348,20 +348,20 @@ window.onload = function() {
     }
   } // -------------------------
 
-  // Count Max for next person in. (Small = Busy)
-  function countMaxForNextPersonIn(){
+  // Count Max for next visitor in. (Small = Busy)
+  function countMaxForNextVisitorIn(){
     var count = Math.floor(Math.random() * 500);
     return count;
   }
 
-  function person_fieldin_1stfloor_percentage(){
+  function visitor_fieldin_1stfloor_percentage(){
     var percentage = 80;
     return percentage;
   }
 
-  function visitedBooth(person_i, booth_j){
+  function visitedBooth(visitor_i, booth_j){
     var result = false;
-    for(let booth of person_booth_visit_list[person_i]){
+    for(let booth of visitor_booth_visit_list[visitor_i]){
       if(booth == booth_j){
         result = true;
         break;
@@ -487,18 +487,18 @@ window.onload = function() {
     // Find Next Near Booth interested in
     var near_distance = -1;
     for(var j = 0; j < NUM_OF_BOOTH; j++){
-      if(world_awake > 0 && person_playing[people_index] != 0) break;
+      if(world_awake > 0 && visitor_playing[people_index] != 0) break;
       if(visitedBooth(people_index, j)) continue;
-      if(booth_gamecategory[j] == person_gamecategory[people_index]){
-        var distance = Math.pow(person_x[people_index] - booth_x[j], 2) + Math.pow(person_y[people_index] - booth_y[j], 2);
+      if(booth_gamecategory[j] == visitor_gamecategory[people_index]){
+        var distance = Math.pow(visitor_x[people_index] - booth_x[j], 2) + Math.pow(visitor_y[people_index] - booth_y[j], 2);
         if(distance < near_distance || near_distance == -1){
           near_distance = distance;
-          person_next_booth[people_index] = j;        // nearest booth
+          visitor_next_booth[people_index] = j;        // nearest booth
         }
       }
     }
     if(near_distance==-1){
-      person_next_booth[people_index] = -1;        // no next booth
+      visitor_next_booth[people_index] = -1;        // no next booth
     }
   }
 
@@ -511,7 +511,7 @@ window.onload = function() {
     }
 
     for(var i = 0; i < NUM_OF_PEOPLE; i++){
-      if(Math.pow(person_x[i] - exhibitor_x, 2) + Math.pow(person_y[i] - exhibitor_y, 2) < 100){
+      if(Math.pow(visitor_x[i] - exhibitor_x, 2) + Math.pow(visitor_y[i] - exhibitor_y, 2) < 100){
         move_delay = move_delay * 5;
         break;
       }
@@ -578,18 +578,18 @@ window.onload = function() {
       }
     }
 
-    // Draw Persons
+    // Draw Visitors
     ctx.strokeStyle = 'black';
     for(var i = 0; i < NUM_OF_PEOPLE; i++){
-     if(person_in_field[i] == true){
+     if(visitor_in_field[i] == true){
       var size = 1;
-      ctx.strokeStyle = GameCateogryColor[person_gamecategory[i]];
+      ctx.strokeStyle = GameCateogryColor[visitor_gamecategory[i]];
       ctx.beginPath();
-      ctx.arc(person_x[i], person_y[i], 3 * size + Math.abs(person_playing[i]/100), 0, Math.PI*2, true);
-      if(person_is_press[i]){
+      ctx.arc(visitor_x[i], visitor_y[i], 3 * size + Math.abs(visitor_playing[i]/100), 0, Math.PI*2, true);
+      if(visitor_is_press[i]){
         ctx.textAlign = "center";
         ctx.font = "8pt 'Times New Roman'";
-        ctx.fillText("PRESS", person_x[i], person_y[i]);
+        ctx.fillText("PRESS", visitor_x[i], visitor_y[i]);
       }
       ctx.stroke();
       ctx.beginPath();
@@ -597,7 +597,7 @@ window.onload = function() {
         ctx.strokeStyle = 'black';
         ctx.textAlign = "center";
         ctx.font = "20pt 'Times New Roman'";
-        ctx.fillText(GameCateogryText[person_gamecategory[i]] + " Game Fan", person_x[i], person_y[i] - 10);
+        ctx.fillText(GameCateogryText[visitor_gamecategory[i]] + " Game Fan", visitor_x[i], visitor_y[i] - 10);
       }
       ctx.stroke();
      }
@@ -605,21 +605,21 @@ window.onload = function() {
 
     // Draw Exhibitor
     if(Exhibitor_size > 1){Exhibitor_size--;}else{Exhibitor_size = 1}
-    var person_offset = -5;
+    var visitor_offset = -5;
     ctx.strokeStyle = 'black';
     ctx.beginPath();
-    ctx.arc(exhibitor_x, exhibitor_y + person_offset * Exhibitor_size, 3 * Exhibitor_size, 0, Math.PI*2, true);
-    ctx.moveTo(exhibitor_x - 5 * Exhibitor_size, exhibitor_y + (6 + person_offset) * Exhibitor_size);
-    ctx.lineTo(exhibitor_x + 5 * Exhibitor_size, exhibitor_y + (6 + person_offset) * Exhibitor_size);
+    ctx.arc(exhibitor_x, exhibitor_y + visitor_offset * Exhibitor_size, 3 * Exhibitor_size, 0, Math.PI*2, true);
+    ctx.moveTo(exhibitor_x - 5 * Exhibitor_size, exhibitor_y + (6 + visitor_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x + 5 * Exhibitor_size, exhibitor_y + (6 + visitor_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x, exhibitor_y + (3 + person_offset) * Exhibitor_size);
-    ctx.lineTo(exhibitor_x, exhibitor_y + (8 + person_offset) * Exhibitor_size);
+    ctx.moveTo(exhibitor_x, exhibitor_y + (3 + visitor_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x, exhibitor_y + (8 + visitor_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * Exhibitor_size);
-    ctx.lineTo(exhibitor_x - 4 * Exhibitor_size, exhibitor_y + (11 + person_offset) * Exhibitor_size);
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + visitor_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x - 4 * Exhibitor_size, exhibitor_y + (11 + visitor_offset) * Exhibitor_size);
 
-    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + person_offset) * Exhibitor_size);
-    ctx.lineTo(exhibitor_x + 4 * Exhibitor_size, exhibitor_y + (11 + person_offset) * Exhibitor_size);
+    ctx.moveTo(exhibitor_x,            exhibitor_y + (8 + visitor_offset) * Exhibitor_size);
+    ctx.lineTo(exhibitor_x + 4 * Exhibitor_size, exhibitor_y + (11 + visitor_offset) * Exhibitor_size);
     ctx.stroke();
 
     // Draw Exhibitor - booth line
@@ -754,7 +754,7 @@ window.onload = function() {
       world_awake--;
       if(world_awake == 0){ // reset
         for( var i = 0; i < NUM_OF_PEOPLE; i++){
-          person_playing[i] = 0;
+          visitor_playing[i] = 0;
           setNextBooth(i);
         }
       }
@@ -787,19 +787,19 @@ window.onload = function() {
     for(var c = 0; c < NUM_OF_CIRCLE; c++){
       if(genre_switch_circle_radius_max[c] <= 0 || world_awake > 0) continue;
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
-        var person_length_pow = Math.pow(genre_switch_circle_x[c] - person_x[i], 2) + Math.pow(genre_switch_circle_y[c] - person_y[i], 2);
+        var visitor_length_pow = Math.pow(genre_switch_circle_x[c] - visitor_x[i], 2) + Math.pow(genre_switch_circle_y[c] - visitor_y[i], 2);
         var circle_length_pow = Math.pow(genre_switch_circle_radius[c], 2);
-        if(circle_length_pow > person_length_pow){  // person is in circle
-        var inBooth_num = inBooth(person_x[i], person_y[i], -1);
-          if(inBooth_num < 0){             // Person is out of booth
-            person_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
+        if(circle_length_pow > visitor_length_pow){  // visitor is in circle
+        var inBooth_num = inBooth(visitor_x[i], visitor_y[i], -1);
+          if(inBooth_num < 0){             // Visitor is out of booth
+            visitor_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
             if(genre_switch_circle_type[c] == 0){
               setNextBooth(i);
             }else{	/* 1: ripple by laser */
-              person_next_booth[i] = exhibitor_booth;	// appealed in case of my circle
+              visitor_next_booth[i] = exhibitor_booth;	// appealed in case of my circle
             }
           }else{							// Visitor is in booth
-            if(person_gamecategory[i] != genre_switch_circle_genre[c]){ // draw barrier in case that circle and booth category are not same
+            if(visitor_gamecategory[i] != genre_switch_circle_genre[c]){ // draw barrier in case that circle and booth category are not same
               ctx.beginPath();
               ctx.fillStyle = 'rgba(192, 192, 192, 0.5)';
               ctx.fillRect(booth_x[inBooth_num]- booth_size[inBooth_num] / 2, booth_y[inBooth_num]- booth_size[inBooth_num] / 2,
@@ -829,60 +829,60 @@ window.onload = function() {
       genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);  // set new counter
     }
 
-    // move persons
+    // move visitors
    for(var i = 0; i < NUM_OF_PEOPLE; i++){
-     if(person_in_field[i] == true){
+     if(visitor_in_field[i] == true){
 
        // move to nearest booth
-       if(person_next_booth[i] == -1){
-         person_x[i]--;
-       }else if(person_playing[i] == 0){  // Not playing
-         var x_diff = booth_x[person_next_booth[i]] - person_x[i];
-         var y_diff = booth_y[person_next_booth[i]] - person_y[i];
-         if(x_diff != 0) person_x[i] = person_x[i] + x_diff / Math.abs(x_diff);
-         if(y_diff != 0) person_y[i] = person_y[i] + y_diff / Math.abs(y_diff);
+       if(visitor_next_booth[i] == -1){
+         visitor_x[i]--;
+       }else if(visitor_playing[i] == 0){  // Not playing
+         var x_diff = booth_x[visitor_next_booth[i]] - visitor_x[i];
+         var y_diff = booth_y[visitor_next_booth[i]] - visitor_y[i];
+         if(x_diff != 0) visitor_x[i] = visitor_x[i] + x_diff / Math.abs(x_diff);
+         if(y_diff != 0) visitor_y[i] = visitor_y[i] + y_diff / Math.abs(y_diff);
        }
 
        // Keep distance
        for(var k = 0; k < NUM_OF_PEOPLE; k++){  // Keep distance
-         if( i != k && person_in_field[k] == true && person_playing[i] == 0
-             && person_next_booth[i] == person_next_booth[k]){  // Keep distance only for the same next booth
-           var distance = Math.pow(person_x[i] - person_x[k], 2) + Math.pow(person_y[i] - person_y[k], 2);
+         if( i != k && visitor_in_field[k] == true && visitor_playing[i] == 0
+             && visitor_next_booth[i] == visitor_next_booth[k]){  // Keep distance only for the same next booth
+           var distance = Math.pow(visitor_x[i] - visitor_x[k], 2) + Math.pow(visitor_y[i] - visitor_y[k], 2);
            if(distance < 100){ // Near! Keep Distance!
-            var x_diff = person_x[k] - person_x[i];
-            var y_diff = person_y[k] - person_y[i];
+            var x_diff = visitor_x[k] - visitor_x[i];
+            var y_diff = visitor_y[k] - visitor_y[i];
             var rand_5 = 3;
-            if(inBooth(person_x[k],person_y[k],-1) < 0)
+            if(inBooth(visitor_x[k],visitor_y[k],-1) < 0)
               rand_5 = Math.floor(Math.random() * 6);
             if(x_diff != 0)
-              person_x[i] = person_x[i] - (x_diff / Math.abs(x_diff)) * rand_5;
+              visitor_x[i] = visitor_x[i] - (x_diff / Math.abs(x_diff)) * rand_5;
             else
-              person_x[i] = person_x[i] - (rand_5 - 3);   // 0 case
+              visitor_x[i] = visitor_x[i] - (rand_5 - 3);   // 0 case
             if(y_diff != 0)
-              person_y[i] = person_y[i] - (y_diff / Math.abs(y_diff)) * rand_5;
+              visitor_y[i] = visitor_y[i] - (y_diff / Math.abs(y_diff)) * rand_5;
             else
-              person_y[i] = person_y[i] - (rand_5 - 3);   // 0 case
+              visitor_y[i] = visitor_y[i] - (rand_5 - 3);   // 0 case
            }
         }
        }
 
        // Visit
-       var next_booth = person_next_booth[i];
-       if(Math.abs(booth_x[person_next_booth[i]] - person_x[i]) < 10 && Math.abs(booth_y[next_booth] - person_y[i]) < 10){
-         person_playing[i]++;
-         if(person_playing[i] > 500){       // Played
-           person_booth_visit_list[i].push(next_booth);
-           person_playing[i] = 0;
+       var next_booth = visitor_next_booth[i];
+       if(Math.abs(booth_x[visitor_next_booth[i]] - visitor_x[i]) < 10 && Math.abs(booth_y[next_booth] - visitor_y[i]) < 10){
+         visitor_playing[i]++;
+         if(visitor_playing[i] > 500){       // Played
+           visitor_booth_visit_list[i].push(next_booth);
+           visitor_playing[i] = 0;
            setNextBooth(i);
-           if(person_is_press[i]){
+           if(visitor_is_press[i]){
              booth_trend_score[next_booth] += 10;  // Booth Trend Point Up for press
              booth_news_count[next_booth]++;
              if(booth_news_count[next_booth] == 5 && next_booth == exhibitor_booth && world_awake == 0){      // World_Awake
                world_awake = 2000;
                booth_news_count[next_booth] = 0;
                for( var i = 0; i < NUM_OF_PEOPLE; i++){
-                 person_next_booth[i] = exhibitor_booth;
-                 person_playing[i] = 0;
+                 visitor_next_booth[i] = exhibitor_booth;
+                 visitor_playing[i] = 0;
                }
              }
            }else{
@@ -932,23 +932,23 @@ window.onload = function() {
 
     ctx.fillStyle = "#000";
 
-    // person field in
+    // visitor field in
     if( counter == 0 ){
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
-        if(person_in_field[i] == false){
-          person_in_field[i] = true;
-          person_x[i] =  FIELD_WIDTH;
-          person_y[i] =  FIELD_HEIGHT / 2;
+        if(visitor_in_field[i] == false){
+          visitor_in_field[i] = true;
+          visitor_x[i] =  FIELD_WIDTH;
+          visitor_y[i] =  FIELD_HEIGHT / 2;
           if(game_mode == Mode.game){
-            person_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
+            visitor_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
           }else{	// tutorial
-            person_gamecategory[i] = tutorial_visitor_counter;
+            visitor_gamecategory[i] = tutorial_visitor_counter;
             tutorial_visitor_counter++;
             if(tutorial_visitor_counter > tutorial_num_of_genre - 1) tutorial_visitor_counter = 0;
           }
           setNextBooth(i);
           if(Math.random() < 0.03){
-            person_is_press[i] = true;
+            visitor_is_press[i] = true;
           }
           break;
         }
@@ -958,7 +958,7 @@ window.onload = function() {
     if(game_mode == Mode.tutorial){
       if(counter > 1000) counter = 0;
     }else if(game_mode == Mode.game){
-      if(counter > countMaxForNextPersonIn()) counter = 0;
+      if(counter > countMaxForNextVisitorIn()) counter = 0;
     }
   }
 
