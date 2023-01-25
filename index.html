@@ -35,7 +35,8 @@ window.onload = function() {
   const NUM_OF_BOOTH = 50;
   const NUM_OF_CIRCLE = 100;
   const NUM_OF_LASER = 100;
-  const NUM_OF_TEXT_PLAYING = 100;
+  const NUM_OF_TEXT_PLAYING = 1000;
+  const NUM_OF_TEXT_PLAYED = 1000;
 
   var canvas = document.getElementById('cvs');
   if (!canvas.getContext) {
@@ -115,6 +116,11 @@ window.onload = function() {
   var text_playing_x = new Array(NUM_OF_TEXT_PLAYING);
   var text_playing_y = new Array(NUM_OF_TEXT_PLAYING);
   var text_playing_count = new Array(NUM_OF_TEXT_PLAYING);
+
+  var text_played_x = new Array(NUM_OF_TEXT_PLAYED);
+  var text_played_y = new Array(NUM_OF_TEXT_PLAYED);
+  var text_played_vy = new Array(NUM_OF_TEXT_PLAYED);
+  var text_played_count = new Array(NUM_OF_TEXT_PLAYED);
 
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
@@ -329,10 +335,17 @@ window.onload = function() {
       genre_switch_circle_type[i] = 0;
     }
 
-    for(var i = 0; i < NUM_OF_CIRCLE; i++){
+    for(var i = 0; i < NUM_OF_TEXT_PLAYING; i++){
       text_playing_x[i] = 0;
       text_playing_y[i] = 0;
       text_playing_count[i] = 0;
+    }
+
+    for(var i = 0; i < NUM_OF_TEXT_PLAYED; i++){
+      text_played_x[i] = 0;
+      text_played_y[i] = 0;
+      text_played_count[i] = 0;
+      text_played_vy[i] = 0;
     }
 
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
@@ -546,6 +559,19 @@ window.onload = function() {
       }
     }
   }
+
+  function setPlayedText(x, y){
+    for(var i =0; i < NUM_OF_TEXT_PLAYED; i++){
+      if(text_played_count[i] == 0){
+        text_played_x[i] = x;
+        text_played_y[i] = y;
+        text_played_count[i] = 170;
+        text_played_vy[i] = 2;
+        break;
+      }
+    }
+  }
+
   // DRAW
   function draw(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -800,7 +826,7 @@ window.onload = function() {
     }
 
     // Draw text
-    for(var i = 0; i < NUM_OF_CIRCLE; i++){
+    for(var i = 0; i < NUM_OF_TEXT_PLAYING; i++){
       if(text_playing_count[i] > 0){
         ctx.beginPath();
         ctx.textAlign = "center";
@@ -814,6 +840,20 @@ window.onload = function() {
         ctx.stroke();
         text_playing_y[i]--;
         text_playing_count[i]--;
+      }
+    }
+
+    for(var i = 0; i < NUM_OF_TEXT_PLAYED; i++){
+      if(text_played_count[i] > 0){
+        ctx.beginPath();
+        ctx.textAlign = "center";
+        ctx.font = "25pt 'Times New Roman'";
+        ctx.fillStyle = "red";
+        ctx.fillText("Played", text_played_x[i], text_played_y[i] );
+        ctx.stroke();
+        text_played_y[i]-=text_played_vy[i];
+        if(text_played_vy[i] > 0) text_played_vy[i]-=0.02;
+        text_played_count[i]--;
       }
     }
 
@@ -910,6 +950,7 @@ window.onload = function() {
          if(visitor_playing[i] % 50 == 0)  setPlayingText(visitor_x[i],visitor_y[i]);
          visitor_playing[i]++;
          if(visitor_playing[i] > 500){       // Played
+           setPlayedText(visitor_x[i],visitor_y[i]);
            visitor_booth_visit_list[i].push(next_booth);
            visitor_playing[i] = 0;
            setNextBooth(i);
