@@ -37,6 +37,8 @@ window.onload = function() {
   const NUM_OF_LASER = 100;
   const NUM_OF_TEXT_PLAYING = 1000;
   const NUM_OF_TEXT_PLAYED = 1000;
+  const NUM_OF_NEWS_PRESSED = 100;
+  var tutorial_press_counter = 0;
 
   var canvas = document.getElementById('cvs');
   if (!canvas.getContext) {
@@ -121,6 +123,11 @@ window.onload = function() {
   var text_played_y = new Array(NUM_OF_TEXT_PLAYED);
   var text_played_vy = new Array(NUM_OF_TEXT_PLAYED);
   var text_played_count = new Array(NUM_OF_TEXT_PLAYED);
+
+  var news_pressed_x = new Array(NUM_OF_NEWS_PRESSED);
+  var news_pressed_y = new Array(NUM_OF_NEWS_PRESSED);
+  var news_pressed_booth = new Array(NUM_OF_NEWS_PRESSED);
+  var news_pressed_count = new Array(NUM_OF_NEWS_PRESSED);
 
   var genre_switch_circle_counter = 0;
   const GENRE_SWITCH_CIRCLE_COUNTER_MAX = 1000;
@@ -348,9 +355,19 @@ window.onload = function() {
       text_played_vy[i] = 0;
     }
 
+    for(var i = 0; i < NUM_OF_NEWS_PRESSED; i++){
+      news_pressed_x[i] = 0;
+      news_pressed_y[i] = 0;
+      news_pressed_booth[i] = 0;
+      news_pressed_count[i] = 0;
+    }
+
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
     Exhibitor_size = 200;
+    tutorial_press_counter = 0;
   }
+
+
 
   function adjustLocation(e){
     // adjust
@@ -489,6 +506,18 @@ window.onload = function() {
       setLaser(exhibitor_x, exhibitor_y);
       booth_life[exhibitor_booth]-=10;
       if(booth_life[exhibitor_booth]<0) booth_life[exhibitor_booth] = 0;
+    }
+  }
+
+  function setNewsPressed(x, y, booth){
+    for(var i = 0; i < NUM_OF_NEWS_PRESSED; i++){
+      if(news_pressed_count[i] == 0){
+        news_pressed_x[i] = x;
+        news_pressed_y[i] = y;
+        news_pressed_booth[i] = booth;
+        news_pressed_count[i] = 1;
+        break;
+      }
     }
   }
 
@@ -857,6 +886,58 @@ window.onload = function() {
       }
     }
 
+    // Draw News Pressed
+    var OFFSET_UNIT_X = FIELD_WIDTH / 8;
+    var OFFSET_UNIT_Y = FIELD_HEIGHT / 10;
+    var text_size = 40;
+    for(var i = 0; i < NUM_OF_NEWS_PRESSED; i++){
+      var offset_x = i * OFFSET_UNIT_X;
+      var offset_y = i * OFFSET_UNIT_Y;
+      var news_x1 = FIELD_WIDTH / 8 + offset_x;
+      var news_y1 = FIELD_HEIGHT / 8 + offset_y;
+      var news_x2 = FIELD_WIDTH / 2 + offset_x;
+      var news_y2 = FIELD_HEIGHT / 2 + offset_y;
+      if(news_pressed_count[i] > 0){
+        if(news_pressed_count[i] < 50){
+          var x1 = news_x1 + (news_pressed_x[i] - news_x1) / 50 * (50 - news_pressed_count[i]);
+          var y1 = news_y1 + (news_pressed_y[i] - news_y1) / 50 * (50 - news_pressed_count[i]);
+          var x2 = news_x2 + (news_pressed_x[i] - news_x2) / 50 * (50 - news_pressed_count[i]);
+          var y2 = news_y2 + (news_pressed_y[i] - news_y2) / 50 * (50 - news_pressed_count[i]);
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(192, 192, 192, 0.5)';
+          ctx.fillRect(x1, y1, x2-x1, y2-y1);
+          ctx.stroke();
+        }
+        if(news_pressed_count[i] >= 50 && news_pressed_count[i] < 500 ){
+          ctx.beginPath();
+          ctx.textAlign = "left";
+          ctx.font = text_size + "pt 'Times New Roman'";
+          ctx.fillStyle = 'rgba(192, 192, 192, 0.5)';
+          ctx.fillRect(news_x1, news_y1, news_x2 - news_x1, news_y2 - news_y1);
+          ctx.fillStyle = "white";
+          ctx.fillText("NEWS", news_x1, news_y1 + text_size);
+          ctx.font = text_size * 2 / 3 + "pt 'Times New Roman'";
+          ctx.fillText("Booth No. " + news_pressed_booth[i], news_x1, news_y1 + text_size * 2);
+          ctx.fillText("Trend Score: " + booth_trend_score[news_pressed_booth[i]], news_x1, news_y1 + text_size * 3);
+          ctx.stroke();
+        }
+        if(news_pressed_count[i] >= 500 && news_pressed_count[i] < 550){
+          var x1 = news_x1 + (news_pressed_x[i] - news_x1) / 50 * (news_pressed_count[i] - 500);
+          var y1 = news_y1 + (news_pressed_y[i] - news_y1) / 50 * (news_pressed_count[i] - 500);
+          var x2 = news_x2 + (news_pressed_x[i] - news_x2) / 50 * (news_pressed_count[i] - 500);
+          var y2 = news_y2 + (news_pressed_y[i] - news_y2) / 50 * (news_pressed_count[i] - 500);
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(192, 192, 192, 0.5)';
+          ctx.fillRect(x1, y1, x2-x1, y2-y1);
+          ctx.stroke();
+        }
+        news_pressed_count[i]++;
+        if(news_pressed_count[i] >= 550){
+          news_pressed_count[i] = 0;
+        }
+      }
+    }
+
     // move Exhibitor
     // refer to move_exhibitor() function. Now not support for touch operation
 
@@ -959,6 +1040,7 @@ window.onload = function() {
            if(visitor_is_press[i]){
              booth_trend_score[next_booth] += 10;  // Booth Trend Point Up for press
              booth_news_count[next_booth]++;
+             setNewsPressed(visitor_x[i],visitor_y[i],next_booth);
              if(booth_news_count[next_booth] == 5 && next_booth == exhibitor_booth && world_awake == 0){      // World_Awake
                world_awake = 2000;
                booth_news_count[next_booth] = 0;
@@ -1029,8 +1111,16 @@ window.onload = function() {
             if(tutorial_visitor_counter > tutorial_num_of_genre - 1) tutorial_visitor_counter = 0;
           }
           setNextBooth(i);
-          if(Math.random() < 0.03){
-            visitor_is_press[i] = true;
+          if(game_mode == Mode.tutorial){
+            tutorial_press_counter++;
+            if(tutorial_press_counter > 3){
+              tutorial_press_counter = 0;
+              visitor_is_press[i] = true;
+            }
+          }else{
+            if(Math.random() < 0.03){
+              visitor_is_press[i] = true;
+            }
           }
           break;
         }
