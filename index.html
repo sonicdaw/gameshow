@@ -921,6 +921,8 @@ window.onload = function() {
          if(y_diff != 0) visitor_y[i] = visitor_y[i] + y_diff / Math.abs(y_diff);
        }
 
+       if(visitor_x[i] < -100) visitor_in_field[i] = false;	// out of field
+
        // Keep distance
        for(var k = 0; k < NUM_OF_PEOPLE; k++){  // Keep distance
          if( i != k && visitor_in_field[k] == true && visitor_playing[i] == 0
