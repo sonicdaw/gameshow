@@ -217,18 +217,26 @@ window.onload = function() {
    }
   }
 
-  // for track ball support
+  // for track ball support & Click
   canvas.onclick=function(e){
     ElementRequestPointerLock();
+
+   if(e.button == 0){ //left button
     if(game_mode == Mode.tutorial){
       game_mode = Mode.game;
       init_game();
     }else if(game_mode == Mode.game){
-      setExhibitor_laser();
+      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth(direct) */);
     }else if(game_mode == Mode.gameover){
       game_mode = Mode.tutorial;
       init_tutorial();
     }
+   }else if(e.button == 2){  // Right Button
+    if(game_mode == Mode.game){
+      setExhibitor_laser();
+    }
+   }
+
   }
 
   function ElementRequestPointerLock(){
