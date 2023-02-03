@@ -15,6 +15,7 @@ window.onload = function() {
   const RIGHT_OFFSET = 10;
   const TOP_OFFSET = 10;
   const NUM_OF_PEOPLE = 1000;
+  const RIGHT_LIFE_WIDTH = 20;
   const DEFAULT_FONT = "bold 8pt 'Times New Roman'";
   const GRID_DIVIDE = 20;
   var grid_unit_width = 0;
@@ -169,7 +170,7 @@ window.onload = function() {
 
     WIDTH = w;
     HEIGHT = h;
-    FIELD_WIDTH = WIDTH - LEFT_OFFSET - RIGHT_OFFSET;
+    FIELD_WIDTH = WIDTH - LEFT_OFFSET - RIGHT_OFFSET - RIGHT_LIFE_WIDTH;
     FIELD_HEIGHT = HEIGHT - TOP_OFFSET * 2;
 
     grid_unit_width = FIELD_WIDTH / GRID_DIVIDE;
@@ -892,6 +893,14 @@ window.onload = function() {
         text_played_count[i]--;
       }
     }
+
+    // Draw Right Life
+    ctx.beginPath();
+    ctx.fillStyle = "green";
+    ctx.fillRect(FIELD_WIDTH + LEFT_OFFSET , TOP_OFFSET + FIELD_HEIGHT * (100 - booth_life[exhibitor_booth]) / 100,
+                  RIGHT_LIFE_WIDTH, FIELD_HEIGHT * booth_life[exhibitor_booth] / 100 );
+    ctx.stroke();
+
 
     // Draw News Pressed
     var OFFSET_UNIT_X = FIELD_WIDTH / 8;
