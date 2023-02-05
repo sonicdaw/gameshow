@@ -890,7 +890,11 @@ window.onload = function() {
         ctx.textAlign = "center";
         ctx.font = "25pt 'Times New Roman'";
         ctx.fillStyle = "red";
-        ctx.fillText("Played", text_played_x[i], text_played_y[i] );
+        if(game_mode == Mode.tutorial){
+          ctx.fillText("Played", text_played_x[i], text_played_y[i] );
+　　　　 }else{
+          ctx.fillText("♪", text_played_x[i], text_played_y[i] );
+        }
         ctx.stroke();
         text_played_y[i]-=text_played_vy[i];
         if(text_played_vy[i] > 0) text_played_vy[i]-=0.02;
