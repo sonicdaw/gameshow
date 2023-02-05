@@ -580,8 +580,9 @@ window.onload = function() {
         break;
       }
     }
-    exhibitor_x = exhibitor_x + moment_x * exhibitor_circle_radius_max_pow / 10000 / move_delay;
-    exhibitor_y = exhibitor_y + moment_y * exhibitor_circle_radius_max_pow / 10000 / move_delay;
+    var stamina = 0.2 + 0.8 * (booth_life[exhibitor_booth] / 100);
+    exhibitor_x = exhibitor_x + moment_x * exhibitor_circle_radius_max_pow / 10000 / move_delay * stamina;
+    exhibitor_y = exhibitor_y + moment_y * exhibitor_circle_radius_max_pow / 10000 / move_delay * stamina;
 
     if(exhibitor_x > WIDTH - RIGHT_OFFSET) exhibitor_x = WIDTH - RIGHT_OFFSET;
     if(exhibitor_x < LEFT_OFFSET) exhibitor_x = LEFT_OFFSET;
