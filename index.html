@@ -520,7 +520,6 @@ window.onload = function() {
   function setExhibitor_laser(){
     if(booth_life[exhibitor_booth]>10){
       setLaser(exhibitor_x, exhibitor_y);
-      booth_life[exhibitor_booth]-=10;
       if(booth_life[exhibitor_booth]<0) booth_life[exhibitor_booth] = 0;
     }
   }
@@ -866,6 +865,7 @@ window.onload = function() {
         genre_laser_to_width[i]++;
         if(genre_laser_to_width[i]>100){
           setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 1/* by laser */);
+          booth_life[exhibitor_booth]-=10;
           genre_laser_to_width[i] = 0;		// reset
         }
       }
