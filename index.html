@@ -78,6 +78,7 @@ window.onload = function() {
   var booth_trend_score = new Array(NUM_OF_BOOTH);
   var booth_news_count = new Array(NUM_OF_BOOTH);
   var booth_life = new Array(NUM_OF_BOOTH);
+  var booth_life_displaying = new Array(NUM_OF_BOOTH);
   var booth_defend = new Array(NUM_OF_BOOTH);
   var number_of_active_booth = 0;
   const BOOTH_SIZE_MAX = 100;
@@ -438,6 +439,7 @@ window.onload = function() {
     booth_trend_score[i] = 0;
     booth_news_count[i] = 0;
     booth_life[i] = 100;
+    booth_life_displaying[i] = booth_life[i];
     booth_defend[i] = false;
   }
 
@@ -908,9 +910,16 @@ window.onload = function() {
     // Draw Right Life
     ctx.beginPath();
     ctx.fillStyle = "green";
-    ctx.fillRect(FIELD_WIDTH + LEFT_OFFSET , TOP_OFFSET + FIELD_HEIGHT * (100 - booth_life[exhibitor_booth]) / 100,
-                  RIGHT_LIFE_WIDTH, FIELD_HEIGHT * booth_life[exhibitor_booth] / 100 );
+    ctx.fillRect(FIELD_WIDTH + LEFT_OFFSET , TOP_OFFSET + FIELD_HEIGHT * (100 - booth_life_displaying[exhibitor_booth]) / 100,
+                  RIGHT_LIFE_WIDTH, FIELD_HEIGHT * booth_life_displaying[exhibitor_booth] / 100 );
     ctx.stroke();
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      if(booth_life[i] > booth_life_displaying[i]){
+        booth_life_displaying[i]+=0.1;
+      }else if(booth_life[i] < booth_life_displaying[i]){
+        booth_life_displaying[i]-=0.1;
+      }
+    }
 
 
     // Draw News Pressed
