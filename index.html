@@ -103,6 +103,11 @@ window.onload = function() {
   var exhibitor_y_click_pre = -1;
   var exhibitor_genre_ripple_counter = 0;
   var Exhibitor_size;
+  var exhibitor_trend_rank_pre = -1;
+  var exhibitor_trend_rank = -1;
+  var exhibitor_rank_up_down_notice_text = "";
+  var exhibitor_rank_up_down_notice_count = 0;
+
 
   var genre_switch_circle_x = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_y = new Array(NUM_OF_CIRCLE);
@@ -377,6 +382,10 @@ window.onload = function() {
     genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);
     Exhibitor_size = 200;
     tutorial_press_counter = 0;
+    exhibitor_trend_rank = -1;
+    exhibitor_trend_rank_pre = -1;
+    exhibitor_rank_up_down_notice_text = "";
+    exhibitor_rank_up_down_notice_count = 0;
   }
 
 
@@ -819,6 +828,22 @@ window.onload = function() {
       if(trend_ranking[i][0]==exhibitor_booth){
         ctx.fillStyle = "red";
         trend_rank_text_y = TOP_OFFSET + 35 + i * 15;
+        if(trend_ranking[i][1] != 0){   // handle when trend score is more than 0
+          if(exhibitor_trend_rank == -1){				// Compare with previous rank
+            exhibitor_trend_rank_pre = i + 1;		// first compare
+            exhibitor_trend_rank = i + 1;
+          }else if(exhibitor_trend_rank > i + 1){	// new rank
+            exhibitor_rank_up_down_notice_text = "Trend Rank Up!";
+            exhibitor_rank_up_down_notice_count = 500;
+            exhibitor_trend_rank_pre = exhibitor_trend_rank;
+            exhibitor_trend_rank = i + 1;
+          }else if(exhibitor_trend_rank < i + 1){	// new rank
+            exhibitor_rank_up_down_notice_text = "Trend Rank Down";
+            exhibitor_rank_up_down_notice_count = 500;
+            exhibitor_trend_rank_pre = exhibitor_trend_rank;
+            exhibitor_trend_rank = i + 1;
+          }
+        }
       }else{
         ctx.fillStyle = "black";
       }
@@ -907,6 +932,17 @@ window.onload = function() {
         if(text_played_vy[i] > 0) text_played_vy[i]-=0.02;
         text_played_count[i]--;
       }
+    }
+
+    if(exhibitor_rank_up_down_notice_count > 0){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "green";
+      ctx.fillText(exhibitor_rank_up_down_notice_text, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.fillText(exhibitor_trend_rank_pre + "→" + exhibitor_trend_rank, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
+      ctx.stroke();
+      exhibitor_rank_up_down_notice_count--;
     }
 
     // Draw Right Life
