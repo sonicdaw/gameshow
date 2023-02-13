@@ -877,10 +877,11 @@ window.onload = function() {
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.font = "15pt 'Times New Roman'";
-        ctx.fillStyle = "green";
         if(game_mode == Mode.tutorial){
+          ctx.fillStyle = "green";
           ctx.fillText("Playing♪", text_playing_x[i], text_playing_y[i] );
 　　　　 }else{
+          ctx.fillStyle = 'rgba(0, 128, 0, 0.5)';
           ctx.fillText("♪", text_playing_x[i], text_playing_y[i] );
         }
         ctx.stroke();
@@ -894,10 +895,11 @@ window.onload = function() {
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.font = "25pt 'Times New Roman'";
-        ctx.fillStyle = "red";
         if(game_mode == Mode.tutorial){
+          ctx.fillStyle = "red";
           ctx.fillText("Played", text_played_x[i], text_played_y[i] );
 　　　　 }else{
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
           ctx.fillText("♪", text_played_x[i], text_played_y[i] );
         }
         ctx.stroke();
