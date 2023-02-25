@@ -713,6 +713,15 @@ window.onload = function() {
         ctx.fillText(GameCateogryText[visitor_gamecategory[i]] + " Game Fan", visitor_x[i], visitor_y[i] - 10);
       }
       ctx.stroke();
+      // next booth is exhibitor's booth
+      if(visitor_next_booth[i] == exhibitor_booth){
+        ctx.beginPath();
+        ctx.globalAlpha = 0.1;
+        ctx.moveTo(visitor_x[i], visitor_y[i]);
+        ctx.lineTo(booth_x[exhibitor_booth], booth_y[exhibitor_booth]);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
      }
     }
 
