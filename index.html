@@ -871,24 +871,6 @@ window.onload = function() {
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // Draw World Arake
-    if(world_awake > 0){
-      ctx.beginPath();
-      ctx.textAlign = "center";
-      ctx.font = "50pt 'Times New Roman'";
-      ctx.fillStyle = "red";
-      ctx.fillText("World Awake", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
-      ctx.fillText(world_awake, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
-      ctx.stroke();
-      world_awake--;
-      if(world_awake == 0){ // reset
-        for( var i = 0; i < NUM_OF_PEOPLE; i++){
-          visitor_playing[i] = 0;
-          setNextBooth(i);
-        }
-      }
-    }
-
     // draw appeal lazer
     for(var i = 0; i < NUM_OF_LASER; i++){
       if(genre_laser_to_width[i] != 0){
@@ -944,17 +926,6 @@ window.onload = function() {
         if(text_played_vy[i] > 0) text_played_vy[i]-=0.02;
         text_played_count[i]--;
       }
-    }
-
-    if(exhibitor_rank_up_down_notice_count > 0){
-      ctx.beginPath();
-      ctx.textAlign = "center";
-      ctx.font = "50pt 'Times New Roman'";
-      ctx.fillStyle = "green";
-      ctx.fillText(exhibitor_rank_up_down_notice_text, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
-      ctx.fillText(exhibitor_trend_rank_pre + "→" + exhibitor_trend_rank, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
-      ctx.stroke();
-      exhibitor_rank_up_down_notice_count--;
     }
 
     // Draw Right Life
@@ -1020,6 +991,36 @@ window.onload = function() {
         news_pressed_count[i]++;
         if(news_pressed_count[i] >= 550){
           news_pressed_count[i] = 0;
+        }
+      }
+    }
+
+    // Draw Trend rank up/down text
+    if(exhibitor_rank_up_down_notice_count > 0){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "green";
+      ctx.fillText(exhibitor_rank_up_down_notice_text, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.fillText(exhibitor_trend_rank_pre + "→" + exhibitor_trend_rank, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
+      ctx.stroke();
+      exhibitor_rank_up_down_notice_count--;
+    }
+
+    // Draw World Awake
+    if(world_awake > 0){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "red";
+      ctx.fillText("World Awake", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.fillText(world_awake, FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2 + 70);
+      ctx.stroke();
+      world_awake--;
+      if(world_awake == 0){ // reset
+        for( var i = 0; i < NUM_OF_PEOPLE; i++){
+          visitor_playing[i] = 0;
+          setNextBooth(i);
         }
       }
     }
