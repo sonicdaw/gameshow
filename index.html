@@ -90,6 +90,7 @@ window.onload = function() {
   var visitor_booth_visit_list = new Array(NUM_OF_PEOPLE);
   var visitor_playing = new Array(NUM_OF_PEOPLE);
   var visitor_is_press = new Array(NUM_OF_PEOPLE);
+  var visitor_is_press_textsize_counter = new Array(NUM_OF_PEOPLE);
   var visitor_next_booth = new Array(NUM_OF_PEOPLE);
 
   var exhibitor_x = -1;
@@ -332,6 +333,7 @@ window.onload = function() {
       visitor_booth_visit_list[i] = [];
       visitor_playing[i] = 0;
       visitor_is_press[i] = false;
+      visitor_is_press_textsize_counter[i] = 0;
       visitor_next_booth[i] = -1;
     }
 
@@ -689,8 +691,18 @@ window.onload = function() {
       ctx.arc(visitor_x[i], visitor_y[i], 3 * size + Math.abs(visitor_playing[i]/100), 0, Math.PI*2, true);
       if(visitor_is_press[i]){
         ctx.textAlign = "center";
-        ctx.font = "8pt 'Times New Roman'";
+        if(visitor_is_press_textsize_counter[i] < 100){
+          ctx.font = 8 + 20 * visitor_is_press_textsize_counter[i] / 100 + "pt 'Times New Roman'";
+        }else if(visitor_is_press_textsize_counter[i] < 200){
+          ctx.font = 8 + 20 * (200 - visitor_is_press_textsize_counter[i]) / 100 + "pt 'Times New Roman'";
+        }else{
+          ctx.font = "8pt 'Times New Roman'";
+        }
         ctx.fillText("PRESS", visitor_x[i], visitor_y[i]);
+        visitor_is_press_textsize_counter[i]++;
+        if(visitor_is_press_textsize_counter[i] > 500){
+          visitor_is_press_textsize_counter[i] = 0;
+        }
       }
       ctx.stroke();
       ctx.beginPath();
