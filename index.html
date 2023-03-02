@@ -1090,7 +1090,7 @@ window.onload = function() {
      if(visitor_in_field[i] == true){
 
        // move to nearest booth
-       if(visitor_next_booth[i] == -1){
+       if(visitor_next_booth[i] == -1 || game_mode == Mode.gameover){
          visitor_x[i]--;
        }else if(visitor_playing[i] == 0){  // Not playing
          var x_diff = booth_x[visitor_next_booth[i]] - visitor_x[i];
@@ -1169,8 +1169,18 @@ window.onload = function() {
       ctx.stroke();
     }
 
+    // draw tutoril title
+    if(game_mode == Mode.gameover){
+      ctx.beginPath();
+      ctx.textAlign = "center";
+      ctx.font = "50pt 'Times New Roman'";
+      ctx.fillStyle = "Green";
+      ctx.fillText("Game Show Over" , FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.stroke();
+    }
+
     // Time count
-    time_sec++;
+    if(game_mode != Mode.gameover) time_sec++;
     if(time_sec > time_sec_max - 1){
       time_minute++;
       time_sec = 0;
@@ -1186,9 +1196,10 @@ window.onload = function() {
       time_minute = 0;
     }
     if(time_hour > 18){
-      time_day++;
-      time_hour = 0;
-      initForNextDay();
+      // time_day++;
+      // time_hour = 0;
+      game_mode = Mode.gameover;
+      // initForNextDay();
     }
 
     ctx.fillStyle = "#000";
