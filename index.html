@@ -238,8 +238,8 @@ window.onload = function() {
     }else if(game_mode == Mode.game){
       setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth(direct) */);
     }else if(game_mode == Mode.gameover){
-      game_mode = Mode.tutorial;
       init_tutorial();
+      game_mode = Mode.tutorial;
     }
    }else if(e.button == 2){  // Right Button
     if(game_mode == Mode.game){
@@ -264,13 +264,17 @@ window.onload = function() {
     return false;
   }
 
-  function init_game(){
-    score = 0;
-    score_on_screen = 0;
+  function reset_time(){
     time_hour = 10;
     time_minute = 0;
     time_sec = 0;
     time_day = 1;
+  }
+
+  function init_game(){
+    score = 0;
+    score_on_screen = 0;
+    reset_time();
 
     game_over = false;
     game_over_touchlock = 0;
@@ -302,6 +306,7 @@ window.onload = function() {
     game_over = false;
     game_over_touchlock = 0;
     counter = 0;
+    reset_time();
 
     // create booth
     var category_len = tutorial_num_of_genre;
@@ -316,6 +321,9 @@ window.onload = function() {
         setBooth(booth_counter, x, y, size, category);
         booth_counter++;
       }
+    }
+    for(var i = booth_counter; i < NUM_OF_BOOTH; i++){	// out of field
+        setBooth(i, -1, -1, 0, 0);
     }
     number_of_active_booth = booth_counter;
     update_trend_ranking();
@@ -643,6 +651,7 @@ window.onload = function() {
 
     // Draw booth
     for(var i = 0; i < NUM_OF_BOOTH; i++){
+     if(booth_x[i]>0){
       booth_defend[i] = false;
       ctx.beginPath();
       ctx.strokeStyle = GameCateogryColor[booth_gamecategory[i]];
@@ -679,6 +688,7 @@ window.onload = function() {
         ctx.fillText(GameCateogryText[booth_gamecategory[i]] + " Booth", LEFT_OFFSET + FIELD_WIDTH / 4 / 2 - booth_size[i] / 2, booth_y[i] - booth_size[i] / 2 - booth_size[i] / 3);
         ctx.stroke();
       }
+     }
     }
 
     // Draw Visitors
@@ -1180,7 +1190,7 @@ window.onload = function() {
     }
 
     // Time count
-    if(game_mode != Mode.gameover) time_sec++;
+    if(game_mode == Mode.game) time_sec++;
     if(time_sec > time_sec_max - 1){
       time_minute++;
       time_sec = 0;
