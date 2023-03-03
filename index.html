@@ -232,14 +232,8 @@ window.onload = function() {
     ElementRequestPointerLock();
 
    if(e.button == 0){ //left button
-    if(game_mode == Mode.tutorial){
-      game_mode = Mode.game;
-      init_game();
-    }else if(game_mode == Mode.game){
+    if(game_mode == Mode.game){
       setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth(direct) */);
-    }else if(game_mode == Mode.gameover){
-      init_tutorial();
-      game_mode = Mode.tutorial;
     }
    }else if(e.button == 2){  // Right Button
     if(game_mode == Mode.game){
@@ -247,6 +241,19 @@ window.onload = function() {
     }
    }
 
+  }
+
+  // Enter key to change mode
+  window.document.onkeydown=function(e){
+    if (e.key == 'Enter') {	// Enter Key
+      if(game_mode == Mode.tutorial){
+        init_game();
+        game_mode = Mode.game;
+      }else if(game_mode == Mode.gameover){
+        init_tutorial();
+        game_mode = Mode.tutorial;
+      }
+    }
   }
 
   function ElementRequestPointerLock(){
@@ -1176,6 +1183,8 @@ window.onload = function() {
       ctx.fillStyle = "Green";
       ctx.fillText("異世界ゲームショウ", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 3);
       ctx.fillText("Another Game Show", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT *2 / 3);
+      ctx.fillStyle = "Black";
+      ctx.fillText("Press Enter Key to start", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
       ctx.stroke();
     }
 
