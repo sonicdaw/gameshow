@@ -587,7 +587,7 @@ window.onload = function() {
     for(var j = 0; j < NUM_OF_BOOTH; j++){
       if(world_awake > 0 && visitor_playing[people_index] != 0) break;
       if(visitedBooth(people_index, j)) continue;
-      if(booth_gamecategory[j] == visitor_gamecategory[people_index]){
+      if(booth_gamecategory[j] == visitor_gamecategory[people_index] && booth_x[j] > 0){
         var distance = Math.pow(visitor_x[people_index] - booth_x[j], 2) + Math.pow(visitor_y[people_index] - booth_y[j], 2);
         if(distance < near_distance || near_distance == -1){
           near_distance = distance;
