@@ -1131,6 +1131,14 @@ window.onload = function() {
         genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);  // set new counter
       }
     }
+    // Booth Strategy Near Entrance
+    for(var i = 0; i < NUM_OF_BOOTH; i++){
+      if(booth_x[i] > (LEFT_OFFSET + FIELD_WIDTH) * 3 / 4){
+        if(Math.floor(Math.random() * 2000) < 1){
+          setGenreAppeal(booth_x[i], booth_y[i], booth_gamecategory[i], booth_size[i] * 5, 0/* by booth */);
+        }
+      }
+    }
 
     // move visitors
    for(var i = 0; i < NUM_OF_PEOPLE; i++){
