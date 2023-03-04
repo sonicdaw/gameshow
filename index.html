@@ -232,11 +232,11 @@ window.onload = function() {
     ElementRequestPointerLock();
 
    if(e.button == 0){ //left button
-    if(game_mode == Mode.game){
+    if(game_mode != Mode.gameover){
       setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth(direct) */);
     }
    }else if(e.button == 2){  // Right Button
-    if(game_mode == Mode.game){
+    if(game_mode != Mode.gameover){
       setExhibitor_laser();
     }
    }
@@ -307,13 +307,14 @@ window.onload = function() {
     number_of_active_booth = NUM_OF_BOOTH;
     update_trend_ranking();
     initForNextDay();
+    set_exhibitor();
   }
 
   function init_tutorial(){
     game_over = false;
     game_over_touchlock = 0;
     counter = 0;
-    exhibitor_x = -1;
+    exhibitor_x = -1; // exhibitor off
     reset_time();
 
     // create booth
@@ -360,12 +361,6 @@ window.onload = function() {
       genre_laser_to_y[i] = 0;
       genre_laser_to_width[i] = 0;
     }
-
-    exhibitor_booth = Math.floor(Math.random() * NUM_OF_BOOTH);
-    exhibitor_x = booth_x[exhibitor_booth];
-    exhibitor_y = booth_y[exhibitor_booth];
-    exhibitor_circle_radius_max_pow = 0;
-    update_exhibitor_circle_radius_max_pow();
 
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
       genre_switch_circle_x[i] = 0;
@@ -578,6 +573,11 @@ window.onload = function() {
     exhibitor_circle_radius_max_pow = booth_trend_score[exhibitor_booth] * 1.5 + 60;
   }
 
+  function update_exhibitor_circle_radius_max_pow_tutorial(){
+    exhibitor_circle_radius_max_pow = 200;
+  }
+
+
   function setNextBooth(people_index){
     // Find Next Near Booth interested in
     var near_distance = -1;
@@ -595,6 +595,23 @@ window.onload = function() {
     if(near_distance==-1){
       visitor_next_booth[people_index] = -1;        // no next booth
     }
+  }
+
+  function set_exhibitor_tutorial(){
+    if(game_mode == Mode.tutorial && exhibitor_x == -1){
+      exhibitor_booth = 11;
+      exhibitor_x = booth_x[exhibitor_booth];
+      exhibitor_y = booth_y[exhibitor_booth];
+      update_exhibitor_circle_radius_max_pow_tutorial();
+    }
+  }
+
+  function set_exhibitor(){
+    exhibitor_booth = Math.floor(Math.random() * NUM_OF_BOOTH);
+    exhibitor_x = booth_x[exhibitor_booth];
+    exhibitor_y = booth_y[exhibitor_booth];
+    exhibitor_circle_radius_max_pow = 0;
+    update_exhibitor_circle_radius_max_pow();
   }
 
   function move_exhibitor(){
@@ -1172,7 +1189,11 @@ window.onload = function() {
            }
            update_trend_ranking();      // update ranking
            if(next_booth == exhibitor_booth){ // update exhibitor_circle_radius_max_pow
-             update_exhibitor_circle_radius_max_pow();
+             if(game_mode == Mode.game){
+               update_exhibitor_circle_radius_max_pow();
+             }else if(game_mode == Mode.tutorial){
+               update_exhibitor_circle_radius_max_pow_tutorial();
+             }
            }
          }
        }
@@ -1255,6 +1276,7 @@ window.onload = function() {
             if(tutorial_press_counter > 3){
               tutorial_press_counter = 0;
               visitor_is_press[i] = true;
+              set_exhibitor_tutorial();		// field in first press on tutorial (2nd or later will be ignored in the function)
             }
           }else{
             if(Math.random() < 0.03){
