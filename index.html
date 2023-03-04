@@ -828,6 +828,7 @@ window.onload = function() {
     }
 
     // Draw Time
+   if(game_mode == Mode.game){
     ctx.fillStyle = 'rgba(0, 0, 0)';
     var time_size = 1;  // 0-1
     var time_hold = 5;
@@ -854,6 +855,7 @@ window.onload = function() {
       ctx.fillText("Day " + time_day + " PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
     }
     ctx.font = DEFAULT_FONT;
+   }
 
     // Draw Score
     score = booth_trend_score[exhibitor_booth];
@@ -1232,9 +1234,10 @@ window.onload = function() {
     }
 
     // Time count
-    if(game_mode == Mode.game) time_sec++;
+    if(game_mode == Mode.game || game_mode == Mode.tutorial) time_sec++;
     if(time_sec > time_sec_max - 1){
       time_minute++;
+      if(game_mode == Mode.tutorial) time_minute--;	// no time on tutorial
       time_sec = 0;
       // recover the life
       for(var i = 0; i < NUM_OF_BOOTH; i++){
