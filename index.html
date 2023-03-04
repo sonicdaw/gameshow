@@ -1128,8 +1128,8 @@ window.onload = function() {
       setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5, 0/* by booth */);
       booth_life[boothToSetCircle]-=10;
       if(booth_life[boothToSetCircle]<0) booth_life[boothToSetCircle] = 0;
-      if(exhibitor_trend_rank < 10){
-        genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX / 5);  // set new counter
+      if(exhibitor_trend_rank_result < 10){
+        genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX / 2);  // set new counter
       }else{
         genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX);  // set new counter
       }
@@ -1137,7 +1137,7 @@ window.onload = function() {
     // Booth Strategy Near Entrance
     for(var i = 0; i < NUM_OF_BOOTH; i++){
       if(booth_x[i] > (LEFT_OFFSET + FIELD_WIDTH) * 3 / 4){
-        if(Math.floor(Math.random() * 2000) < 1){
+        if(Math.floor(Math.random() * 4000) < 1){
           setGenreAppeal(booth_x[i], booth_y[i], booth_gamecategory[i], booth_size[i] * 5, 0/* by booth */);
         }
       }
