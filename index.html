@@ -313,6 +313,7 @@ window.onload = function() {
     game_over = false;
     game_over_touchlock = 0;
     counter = 0;
+    exhibitor_x = -1;
     reset_time();
 
     // create booth
@@ -597,6 +598,7 @@ window.onload = function() {
   }
 
   function move_exhibitor(){
+    if(exhibitor_x == -1) return;
     var move_delay = 1;
     var exhibitor_inBooth = inBooth(exhibitor_x, exhibitor_y, -1);
 
@@ -743,6 +745,7 @@ window.onload = function() {
     }
 
     // Draw Exhibitor
+   if(exhibitor_x != -1){
     if(Exhibitor_size > 1){Exhibitor_size--;}else{Exhibitor_size = 1}
     var visitor_offset = -5;
     ctx.strokeStyle = 'black';
@@ -774,6 +777,7 @@ window.onload = function() {
     ctx.strokeStyle = 'gray';
     ctx.arc(exhibitor_x, exhibitor_y, exhibitor_circle_radius_max_pow, 0, Math.PI*2, true);
     ctx.stroke();
+   }
 
     // Draw and move Genere Appeal (Circle)
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
