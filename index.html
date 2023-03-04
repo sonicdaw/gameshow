@@ -725,7 +725,7 @@ window.onload = function() {
       }
       ctx.stroke();
       ctx.beginPath();
-      if(game_mode == Mode.tutorial){
+      if(game_mode == Mode.tutorial && visitor_is_press[i] == false){
         ctx.strokeStyle = 'black';
         ctx.textAlign = "center";
         ctx.font = "20pt 'Times New Roman'";
