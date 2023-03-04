@@ -70,6 +70,9 @@ window.onload = function() {
   var GameCateogryColor = new Array('blue', 'red', 'green', 'gold', 'purple', 'black', 'cyan');
   var GameCateogryColor_rgb = new Array('0,0,255', '255,0,0', '0,128,0', '255,215,0', '128,0,128', '0,0,0', '0,255,255');
   var GameCateogryText = new Array('Shooting', 'Action', 'RPG', 'Adventure', 'Race', 'Puzzle', 'Simulation');
+  var TutorialText = new Array('Press Enter Key to Start', 'Track ball or Mouse to move', 'Left click to shoot Genre Appeal', 'Right click to shoot Booth Appeal');
+  var TutorialTextCount = 0;
+  var TutorialTextIndex = 0;
 
   var booth_x = new Array(NUM_OF_BOOTH);
   var booth_y =  new Array(NUM_OF_BOOTH);
@@ -1204,6 +1207,12 @@ window.onload = function() {
 
     // draw tutoril title
     if(game_mode == Mode.tutorial){
+      if(TutorialTextCount > 800 && exhibitor_x != -1){
+        TutorialTextCount = 0;
+        TutorialTextIndex++;
+        if(TutorialTextIndex >= TutorialText.length) TutorialTextIndex = 0;
+      }
+
       ctx.beginPath();
       ctx.textAlign = "center";
       ctx.font = "51pt 'Times New Roman'";
@@ -1212,14 +1221,15 @@ window.onload = function() {
       ctx.fillText("Another Game Show", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT *2 / 3);
       ctx.fillStyle = "Green";
       ctx.font = "41pt 'Times New Roman'";
-      ctx.fillText("Press Enter Key to start", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      ctx.fillText(TutorialText[TutorialTextIndex], FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
       ctx.font = "50pt 'Times New Roman'";
       ctx.fillStyle = "Green";
       ctx.fillText("異世界ゲームショウ", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 3);
       ctx.fillText("Another Game Show", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT *2 / 3);
       ctx.fillStyle = "Black";
       ctx.font = "40pt 'Times New Roman'";
-      ctx.fillText("Press Enter Key to start", FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
+      TutorialTextCount++;
+      ctx.fillText(TutorialText[TutorialTextIndex], FIELD_WIDTH / 2 , TOP_OFFSET + FIELD_HEIGHT / 2);
       ctx.stroke();
     }
 
