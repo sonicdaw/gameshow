@@ -103,6 +103,7 @@ window.onload = function() {
   var exhibitor_booth = -1;
   var exhibitor_move = false;
   var exhibitor_circle_radius_max_pow = -1;
+  var exhibitor_circle_radius_max_pow_counter = 0;
   var exhibitor_x_click_pre = -1;
   var exhibitor_y_click_pre = -1;
   var exhibitor_genre_ripple_counter = 0;
@@ -608,6 +609,7 @@ window.onload = function() {
       exhibitor_x = booth_x[exhibitor_booth];
       exhibitor_y = booth_y[exhibitor_booth];
       update_exhibitor_circle_radius_max_pow_tutorial();
+      exhibitor_circle_radius_max_pow_counter = 0;
     }
   }
 
@@ -795,8 +797,14 @@ window.onload = function() {
     ctx.globalAlpha = 1;
 
     // Draw Exhibitor guide circle
+    exhibitor_circle_radius_max_pow_counter++;
+    if(exhibitor_circle_radius_max_pow_counter > 200) exhibitor_circle_radius_max_pow_counter = 0;
     ctx.beginPath();
-    ctx.strokeStyle = 'gray';
+    if(exhibitor_circle_radius_max_pow_counter < 100){
+      ctx.strokeStyle = 'rgba(' + GameCateogryColor_rgb[booth_gamecategory[exhibitor_booth]] + ',' + exhibitor_circle_radius_max_pow_counter / 100 + ')';
+    }else{
+      ctx.strokeStyle = 'rgba(' + GameCateogryColor_rgb[booth_gamecategory[exhibitor_booth]] + ',' + (200 - exhibitor_circle_radius_max_pow_counter) / 100 + ')';
+    }
     ctx.arc(exhibitor_x, exhibitor_y, exhibitor_circle_radius_max_pow, 0, Math.PI*2, true);
     ctx.stroke();
    }
