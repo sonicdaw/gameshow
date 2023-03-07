@@ -113,6 +113,7 @@ window.onload = function() {
   var exhibitor_trend_rank_result = -1;
   var exhibitor_rank_up_down_notice_text = "";
   var exhibitor_rank_up_down_notice_count = 0;
+  var exhibitor_defend = false;
 
 
   var genre_switch_circle_x = new Array(NUM_OF_CIRCLE);
@@ -1093,25 +1094,44 @@ window.onload = function() {
 
     // genre switch circle
 
+    exhibitor_defend = false;
     for(var c = 0; c < NUM_OF_CIRCLE; c++){
       if(genre_switch_circle_radius_max[c] <= 0 || world_awake > 0) continue;
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
         var visitor_length_pow = Math.pow(genre_switch_circle_x[c] - visitor_x[i], 2) + Math.pow(genre_switch_circle_y[c] - visitor_y[i], 2);
         var circle_length_pow = Math.pow(genre_switch_circle_radius[c], 2);
         if(circle_length_pow > visitor_length_pow){  // visitor is in circle
-        var inBooth_num = inBooth(visitor_x[i], visitor_y[i], -1);
+          var inBooth_num = inBooth(visitor_x[i], visitor_y[i], -1);
           if(inBooth_num < 0){             // Visitor is out of booth
+           // Visitors is in exhibitor's circle (Exhibitor circle barrier)
+           var visitor_length_pow = Math.pow(exhibitor_x - visitor_x[i], 2) + Math.pow(exhibitor_y - visitor_y[i], 2);
+           var circle_length_pow = Math.pow(exhibitor_circle_radius_max_pow, 2);
+           if(circle_length_pow > visitor_length_pow){  // visitor is in circle
+             if(exhibitor_defend == false){			// draw once
+			  exhibitor_defend = true;					// Barrier animation
+               ctx.beginPath();
+               ctx.strokeStyle = GameCateogryColor[booth_gamecategory[exhibitor_booth]];
+               ctx.arc(exhibitor_x, exhibitor_y, exhibitor_circle_radius_max_pow, 0, Math.PI*2, true);
+//               ctx.fillStyle = 'rgba(' + GameCateogryColor_rgb[booth_gamecategory[exhibitor_booth]] + ', 0.4)';
+               ctx.fillStyle = 'rgba(0,0,0,0.4)';
+               ctx.fill();
+               ctx.stroke();
+             }
+           }else{									// visitor is out of circle
+            // Visitor's fan genre switch
             visitor_gamecategory[i] = genre_switch_circle_genre[c];// replace genre
             if(genre_switch_circle_type[c] == 0){
               setNextBooth(i);
             }else{	/* 1: ripple by laser */
               visitor_next_booth[i] = exhibitor_booth;	// appealed in case of my circle
             }
-          }else{							// Visitor is in booth
+           }
+          }else{							// Visitor is in booth (Booth barrier)
             if(visitor_gamecategory[i] != genre_switch_circle_genre[c] && booth_defend[inBooth_num] == false){ // draw barrier in case that circle and booth category are not same
               booth_defend[inBooth_num] = true;
               ctx.beginPath();
-              ctx.fillStyle = 'rgba(' + GameCateogryColor_rgb[booth_gamecategory[inBooth_num]] + ', 0.5)';
+//              ctx.fillStyle = 'rgba(' + GameCateogryColor_rgb[booth_gamecategory[inBooth_num]] + ', 0.5)';
+              ctx.fillStyle = 'rgba(0,0,0,0.4)';
               ctx.fillRect(booth_x[inBooth_num]- booth_size[inBooth_num] / 2, booth_y[inBooth_num]- booth_size[inBooth_num] / 2,
                        booth_size[inBooth_num],                         booth_size[inBooth_num]);
               ctx.stroke();
