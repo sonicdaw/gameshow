@@ -844,6 +844,7 @@ window.onload = function() {
     // Draw Time
    if(game_mode == Mode.game){
     ctx.fillStyle = 'rgba(0, 0, 0)';
+    ctx.textAlign = "center";
     var time_size = 1;  // 0-1
     var time_hold = 5;
     if(time_minute == 0){
@@ -856,7 +857,7 @@ window.onload = function() {
     }else{
        time_size = 0;
     }
-    ctx.font = 10 + 10 * time_size + "pt 'Times New Roman'";
+    ctx.font = 10 + 100 * time_size + "pt 'Times New Roman'";
     var text_minutes;
     if(time_minute < 10){
       text_minutes = "0" + time_minute;
@@ -864,9 +865,9 @@ window.onload = function() {
       text_minutes = time_minute;
     }
     if(time_hour < 12){
-      ctx.fillText("Day " + time_day + " AM " + time_hour + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+      ctx.fillText("AM " + time_hour + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 2) * time_size);
     }else{
-      ctx.fillText("Day " + time_day + " PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 4) * time_size);
+      ctx.fillText("PM " + (time_hour - 12)  + ":" + text_minutes, LEFT_OFFSET + FIELD_WIDTH / 2, TOP_OFFSET + (TOP_OFFSET + FIELD_HEIGHT / 2) * time_size);
     }
     ctx.font = DEFAULT_FONT;
    }
