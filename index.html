@@ -174,6 +174,7 @@ window.onload = function() {
   var touchVisualizerCounter = 0;
 
   var tutorial_visitor_counter = 0;
+  var tutorial_visitor_counter_total = 0;
   const tutorial_num_of_genre = 3;
   init_tutorial();
 
@@ -321,6 +322,8 @@ window.onload = function() {
     game_over_touchlock = 0;
     counter = 0;
     exhibitor_x = -1; // exhibitor off
+    tutorial_visitor_counter = 0;
+    tutorial_visitor_counter_total = 0;
     reset_time();
 
     // create booth
@@ -1151,6 +1154,7 @@ window.onload = function() {
     }
 
     // Set Booth genre appeal circle
+   if(game_mode == Mode.game || (game_mode == Mode.tutorial && tutorial_visitor_counter_total > 4)){
     genre_switch_circle_counter--;
     if(genre_switch_circle_counter <= 0){
       var boothToSetCircle = Math.floor(Math.random() * NUM_OF_BOOTH);
@@ -1171,6 +1175,7 @@ window.onload = function() {
         }
       }
     }
+   }
 
     // move visitors
    for(var i = 0; i < NUM_OF_PEOPLE; i++){
@@ -1326,6 +1331,7 @@ window.onload = function() {
           }else{	// tutorial
             visitor_gamecategory[i] = tutorial_visitor_counter;
             tutorial_visitor_counter++;
+            tutorial_visitor_counter_total++;
             if(tutorial_visitor_counter > tutorial_num_of_genre - 1) tutorial_visitor_counter = 0;
           }
           setNextBooth(i);
