@@ -835,7 +835,7 @@ window.onload = function() {
           ctx.textAlign = "center";
           ctx.font = "40pt 'Times New Roman'";
           ctx.fillText("Genre Appeal", genre_switch_circle_x[i], genre_switch_circle_y[i] - genre_switch_circle_radius[i]);
-          ctx.fillText("Genre Appeal", genre_switch_circle_x[i], genre_switch_circle_y[i] + genre_switch_circle_radius[i]);
+          ctx.fillText("Play " + GameCateogryText[genre_switch_circle_genre[i]] + " Game!", genre_switch_circle_x[i], genre_switch_circle_y[i] + genre_switch_circle_radius[i]);
           ctx.stroke();
         }
       }
