@@ -1331,7 +1331,7 @@ window.onload = function() {
           setNextBooth(i);
           if(game_mode == Mode.tutorial){
             tutorial_press_counter++;
-            if(tutorial_press_counter > 3){
+            if(tutorial_press_counter > 2){
               tutorial_press_counter = 0;
               visitor_is_press[i] = true;
               set_exhibitor_tutorial();		// field in first press on tutorial (2nd or later will be ignored in the function)
