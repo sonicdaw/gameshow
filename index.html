@@ -880,7 +880,9 @@ window.onload = function() {
     if(score > score_on_screen) score_on_screen++;
     ctx.textAlign = "left";
     ctx.font = "10pt 'Times New Roman'";
-    ctx.fillText("SCORE: " + score_on_screen + "  News: " + booth_news_count[exhibitor_booth], LEFT_OFFSET, TOP_OFFSET);
+    if(booth_news_count[exhibitor_booth] != null){
+      ctx.fillText("SCORE: " + score_on_screen + "  News: " + booth_news_count[exhibitor_booth], LEFT_OFFSET, TOP_OFFSET);
+    }
     ctx.textAlign = "center";
 
     if(game_over_touchlock > 0) game_over_touchlock--;
