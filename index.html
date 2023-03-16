@@ -123,7 +123,8 @@ window.onload = function() {
   var genre_switch_circle_genre = new Array(NUM_OF_CIRCLE);
   var genre_switch_circle_ripples = false;
   var genre_switch_circle_velocity = new Array(NUM_OF_CIRCLE);
-  var genre_switch_circle_type = new Array(NUM_OF_CIRCLE);		// 0: ripple by booth, 1: ripple by laser
+  var genre_switch_circle_type = new Array(NUM_OF_CIRCLE);		// 0: ripple by booth/exhibitor, 1: ripple by laser
+  var genre_switch_circle_owner = new Array(NUM_OF_CIRCLE);		// 0: ripple by Exhibitor, 1: ripple by booth
 
   var genre_laser_from_x = new Array(NUM_OF_LASER);
   var genre_laser_from_y = new Array(NUM_OF_LASER);
@@ -240,7 +241,7 @@ window.onload = function() {
 
    if(e.button == 0){ //left button
     if(game_mode != Mode.gameover){
-      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth(direct) */);
+      setGenreAppeal(exhibitor_x, exhibitor_y, booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 0/* by booth/exhibitor(direct) */, 0/* by exibitor */);
     }
    }else if(e.button == 2){  // Right Button
     if(game_mode != Mode.gameover){
@@ -379,6 +380,7 @@ window.onload = function() {
       genre_switch_circle_genre[i] = 0;
       genre_switch_circle_velocity[i] = 0;
       genre_switch_circle_type[i] = 0;
+      genre_switch_circle_owner[i] = 0;
     }
 
     for(var i = 0; i < NUM_OF_TEXT_PLAYING; i++){
@@ -532,7 +534,7 @@ window.onload = function() {
     }
   }
 
-  function setGenreAppeal(x, y, genere, radius_max_pow, type){
+  function setGenreAppeal(x, y, genere, radius_max_pow, type, owner){
     for(var i = 0; i < NUM_OF_CIRCLE; i++){
       if(genre_switch_circle_radius_max[i] == 0){
         genre_switch_circle_x[i] = x;
@@ -542,6 +544,7 @@ window.onload = function() {
         genre_switch_circle_genre[i] = genere;
         genre_switch_circle_velocity[i] = 3;
         genre_switch_circle_type[i] = type;
+        genre_switch_circle_owner[i] = owner;
         booth_life[exhibitor_booth]-=3;
         if(booth_life[exhibitor_booth]<0) booth_life[exhibitor_booth] = 0;
         break;
@@ -941,7 +944,7 @@ window.onload = function() {
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // draw appeal lazer
+    // draw appeal lazer by exhibitor
     for(var i = 0; i < NUM_OF_LASER; i++){
       if(genre_laser_to_width[i] != 0){
         ctx.strokeStyle = GameCateogryColor[booth_gamecategory[exhibitor_booth]];
@@ -953,7 +956,7 @@ window.onload = function() {
         ctx.stroke();
         genre_laser_to_width[i]++;
         if(genre_laser_to_width[i]>100){
-          setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 1/* by laser */);
+          setGenreAppeal(genre_laser_to_x[i], genre_laser_to_y[i], booth_gamecategory[exhibitor_booth], exhibitor_circle_radius_max_pow, 1/* by laser */, 0/* exhibitor*/);
           booth_life[exhibitor_booth]-=10;
           genre_laser_to_width[i] = 0;		// reset
         }
@@ -1112,7 +1115,7 @@ window.onload = function() {
            // Visitors is in exhibitor's circle (Exhibitor circle barrier)
            var visitor_length_pow = Math.pow(exhibitor_x - visitor_x[i], 2) + Math.pow(exhibitor_y - visitor_y[i], 2);
            var circle_length_pow = Math.pow(exhibitor_circle_radius_max_pow, 2);
-           if(circle_length_pow > visitor_length_pow){  // visitor is in circle
+           if(circle_length_pow > visitor_length_pow && genre_switch_circle_owner[c] == 1){  // visitor is in circle and the circle is by booth to block(barrier)
              if(exhibitor_defend == false){			// draw once
 			  exhibitor_defend = true;					// Barrier animation
                ctx.beginPath();
@@ -1160,7 +1163,7 @@ window.onload = function() {
     genre_switch_circle_counter--;
     if(genre_switch_circle_counter <= 0){
       var boothToSetCircle = Math.floor(Math.random() * NUM_OF_BOOTH);
-      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5, 0/* by booth */);
+      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], booth_size[boothToSetCircle] * 5, 0/* by booth/exhibitor */, 1/* by booth */);
       booth_life[boothToSetCircle]-=10;
       if(booth_life[boothToSetCircle]<0) booth_life[boothToSetCircle] = 0;
       if(exhibitor_trend_rank_result < 10){
@@ -1173,7 +1176,7 @@ window.onload = function() {
     for(var i = 0; i < NUM_OF_BOOTH; i++){
       if(booth_x[i] > (LEFT_OFFSET + FIELD_WIDTH) * 3 / 4){
         if(Math.floor(Math.random() * 4000) < 1){
-          setGenreAppeal(booth_x[i], booth_y[i], booth_gamecategory[i], booth_size[i] * 5, 0/* by booth */);
+          setGenreAppeal(booth_x[i], booth_y[i], booth_gamecategory[i], booth_size[i] * 5, 0/* by booth/exhibitor */, 1/* by booth */);
         }
       }
     }
