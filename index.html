@@ -1172,8 +1172,9 @@ window.onload = function() {
     genre_switch_circle_counter--;
     if(genre_switch_circle_counter <= 0){
       var boothToSetCircle = Math.floor(Math.random() * NUM_OF_BOOTH);
-      setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], boothToSetCircle, booth_size[boothToSetCircle] * 5, 0/* by booth/exhibitor */, 1/* by booth */);
-      if(booth_life[boothToSetCircle]<0) booth_life[boothToSetCircle] = 0;
+      if(boothToSetCircle != exhibitor_booth){
+        setGenreAppeal(booth_x[boothToSetCircle], booth_y[boothToSetCircle], booth_gamecategory[boothToSetCircle], boothToSetCircle, booth_size[boothToSetCircle] * 5, 0/* by booth/exhibitor */, 1/* by booth */);
+      }
       if(exhibitor_trend_rank_result < 10){
         genre_switch_circle_counter = Math.floor(Math.random() * GENRE_SWITCH_CIRCLE_COUNTER_MAX / 2);  // set new counter
       }else{
