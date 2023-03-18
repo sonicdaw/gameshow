@@ -1339,7 +1339,7 @@ window.onload = function() {
       for(var i = 0; i < NUM_OF_PEOPLE; i++){
         if(visitor_in_field[i] == false){
           visitor_in_field[i] = true;
-          visitor_x[i] =  FIELD_WIDTH;
+          visitor_x[i] =  FIELD_WIDTH + LEFT_OFFSET;
           visitor_y[i] =  FIELD_HEIGHT / 2;
           if(game_mode == Mode.game){
             visitor_gamecategory[i] = Math.floor(Math.random() * GameCateogry.simulation);
