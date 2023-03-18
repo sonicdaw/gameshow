@@ -653,7 +653,7 @@ window.onload = function() {
         break;
       }
     }
-    var stamina = 0.2 + 0.8 * (booth_life[exhibitor_booth] / 100);
+    var stamina = 0.6 + 0.4 * (booth_life[exhibitor_booth] / 100);
     exhibitor_x = exhibitor_x + moment_x * exhibitor_circle_radius_max_pow / 10000 / move_delay * stamina;
     exhibitor_y = exhibitor_y + moment_y * exhibitor_circle_radius_max_pow / 10000 / move_delay * stamina;
 
