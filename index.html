@@ -257,6 +257,9 @@ window.onload = function() {
       if(game_mode == Mode.tutorial){
         init_game();
         game_mode = Mode.game;
+      }else if(game_mode == Mode.game){
+        init_tutorial();
+        game_mode = Mode.tutorial;
       }else if(game_mode == Mode.gameover){
         init_tutorial();
         game_mode = Mode.tutorial;
